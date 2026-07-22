@@ -230,25 +230,17 @@ La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa 
 <input type="number" id="persone" min="1" required>
 
 
-<!-- NUOVE OPZIONI -->
-
 <div class="checkbox-group">
 
 <label>Servizi aggiuntivi</label>
 
 <div class="checkbox-item">
 <input type="checkbox" id="animali">
+
 <label for="animali">
 Viaggio con animale domestico
 </label>
-</div>
 
-
-<div class="checkbox-item">
-<input type="checkbox" id="seggiolino">
-<label for="seggiolino">
-Necessità di seggiolino per bambini
-</label>
 </div>
 
 </div>
@@ -274,7 +266,7 @@ l'informativa sulla privacy
 
 
 <button type="submit">
-Prenota
+Prenota su WhatsApp
 </button>
 
 
@@ -314,8 +306,6 @@ let note=document.getElementById("note").value;
 
 let animali=document.getElementById("animali").checked ? "Si" : "No";
 
-let seggiolino=document.getElementById("seggiolino").checked ? "Si" : "No";
-
 
 
 let messaggio=
@@ -342,9 +332,6 @@ ${persone}
 
 Animale domestico:
 ${animali}
-
-Seggiolino bambini:
-${seggiolino}
 
 Note:
 ${note || "Nessuna"}
