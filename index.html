@@ -90,6 +90,75 @@ height:120px;
 
 }
 
+
+.checkbox-group{
+
+margin-top:25px;
+
+}
+
+.checkbox-item{
+
+display:flex;
+align-items:center;
+gap:10px;
+font-size:14px;
+color:#555;
+margin-top:12px;
+
+}
+
+.checkbox-item input{
+
+width:auto;
+
+}
+
+.checkbox-item label{
+
+margin:0;
+font-weight:normal;
+
+}
+
+
+.privacy{
+
+margin-top:25px;
+font-size:14px;
+color:#555;
+display:flex;
+align-items:center;
+gap:8px;
+
+}
+
+.privacy input{
+
+width:auto;
+
+}
+
+.privacy label{
+
+margin:0;
+font-weight:normal;
+
+}
+
+.privacy a{
+
+color:#f39c12;
+text-decoration:none;
+
+}
+
+.privacy a:hover{
+
+text-decoration:underline;
+
+}
+
 button{
 
 width:100%;
@@ -116,6 +185,7 @@ background:#d87f00;
 
 </head>
 
+
 <body>
 
 <div class="container">
@@ -128,39 +198,90 @@ background:#d87f00;
 La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.
 </p>
 
+
 <form id="bookingForm">
+
 
 <label>Nome e Cognome</label>
 <input type="text" id="nome" required>
 
+
 <label>Numero di telefono</label>
 <input type="tel" id="telefono" required>
+
 
 <label>Indirizzo di partenza</label>
 <input type="text" id="partenza" required>
 
+
 <label>Indirizzo di arrivo</label>
 <input type="text" id="arrivo" required>
+
 
 <label>Data</label>
 <input type="date" id="data" required>
 
+
 <label>Orario</label>
 <input type="time" id="ora" required>
+
 
 <label>Numero persone</label>
 <input type="number" id="persone" min="1" required>
 
+
+<!-- NUOVE OPZIONI -->
+
+<div class="checkbox-group">
+
+<label>Servizi aggiuntivi</label>
+
+<div class="checkbox-item">
+<input type="checkbox" id="animali">
+<label for="animali">
+Viaggio con animale domestico
+</label>
+</div>
+
+
+<div class="checkbox-item">
+<input type="checkbox" id="seggiolino">
+<label for="seggiolino">
+Necessità di seggiolino o dispositivo di sicurezza per bambini
+</label>
+</div>
+
+</div>
+
+
 <label>Note extra (facoltativo)</label>
 <textarea id="note"></textarea>
+
+
+
+<div class="privacy">
+
+<input type="checkbox" id="privacy" required>
+
+<label for="privacy">
+Dichiaro di aver letto e accettato 
+<a href="https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy" target="_blank">
+l'informativa sulla privacy
+</a>
+</label>
+
+</div>
+
 
 <button type="submit">
 Prenota su WhatsApp
 </button>
 
+
 </form>
 
 </div>
+
 
 
 <script>
@@ -168,6 +289,18 @@ Prenota su WhatsApp
 document.getElementById("bookingForm").addEventListener("submit",function(e){
 
 e.preventDefault();
+
+
+let privacy=document.getElementById("privacy").checked;
+
+if(!privacy){
+
+alert("Devi accettare l'informativa sulla privacy per procedere.");
+
+return;
+
+}
+
 
 let nome=document.getElementById("nome").value;
 let telefono=document.getElementById("telefono").value;
@@ -179,8 +312,14 @@ let persone=document.getElementById("persone").value;
 let note=document.getElementById("note").value;
 
 
+let animali=document.getElementById("animali").checked ? "Si" : "No";
+
+let seggiolino=document.getElementById("seggiolino").checked ? "Si" : "No";
+
+
+
 let messaggio=
-Salve, vorrei prenotare un Taxi.
+`Nuova Prenotazione Taxi
 
 Nome: ${nome}
 
@@ -201,18 +340,30 @@ ${ora}
 Numero persone:
 ${persone}
 
+Animale domestico:
+${animali}
+
+Seggiolino bambini:
+${seggiolino}
+
 Note:
 ${note || "Nessuna"}
 
+Il cliente ha accettato l'informativa sulla privacy.
+
 Grazie.`;
+
+
 
 let url="https://wa.me/393286714428?text="+encodeURIComponent(messaggio);
 
 window.open(url,"_blank");
 
+
 });
 
 </script>
+
 
 </body>
 </html>
