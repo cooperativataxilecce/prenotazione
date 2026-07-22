@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Prenota un Taxi | Cooperativa Taxi Lecce</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+background:#f5f5f5;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:40px;
+
+}
+
+.container{
+
+background:white;
+max-width:650px;
+width:100%;
+padding:35px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+}
+
+.logo{
+
+display:block;
+margin:auto;
+width:180px;
+margin-bottom:20px;
+
+}
+
+h2{
+
+text-align:center;
+margin-bottom:30px;
+color:#111;
+
+}
+
+label{
+
+font-weight:bold;
+display:block;
+margin-top:18px;
+margin-bottom:6px;
+
+}
+
+input, textarea{
+
+width:100%;
+padding:14px;
+border:1px solid #ddd;
+border-radius:10px;
+font-size:15px;
+
+}
+
+textarea{
+
+resize:vertical;
+height:120px;
+
+}
+
+button{
+
+width:100%;
+margin-top:30px;
+padding:16px;
+background:#f39c12;
+border:none;
+color:white;
+font-size:18px;
+font-weight:bold;
+border-radius:12px;
+cursor:pointer;
+transition:.3s;
+
+}
+
+button:hover{
+
+background:#d87f00;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<img src="logo.png" class="logo">
+
+<h2>Prenota il tuo Taxi</h2>
+
+<form id="bookingForm">
+
+<label>Nome e Cognome</label>
+<input type="text" id="nome" required>
+
+<label>Numero di telefono</label>
+<input type="tel" id="telefono" required>
+
+<label>Indirizzo di partenza</label>
+<input type="text" id="partenza" required>
+
+<label>Indirizzo di arrivo</label>
+<input type="text" id="arrivo" required>
+
+<label>Data</label>
+<input type="date" id="data" required>
+
+<label>Orario</label>
+<input type="time" id="ora" required>
+
+<label>Numero persone</label>
+<input type="number" id="persone" min="1" required>
+
+<label>Note extra (facoltativo)</label>
+<textarea id="note"></textarea>
+
+<button type="submit">
+Prenota su WhatsApp
+</button>
+
+</form>
+
+</div>
+
+<script>
+
+document.getElementById("bookingForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let nome=document.getElementById("nome").value;
+let telefono=document.getElementById("telefono").value;
+let partenza=document.getElementById("partenza").value;
+let arrivo=document.getElementById("arrivo").value;
+let data=document.getElementById("data").value;
+let ora=document.getElementById("ora").value;
+let persone=document.getElementById("persone").value;
+let note=document.getElementById("note").value;
+
+let messaggio=
+` *Nuova Prenotazione Taxi*
+
+Nome e cognomme: ${nome}
+
+Telefono: ${telefono}
+
+Partenza:
+${partenza}
+
+Arrivo:
+${arrivo}
+
+Data:
+${data}
+
+Orario:
+${ora}
+
+Persone:
+${persone}
+
+Note:
+${note || "Nessuna"}
+
+Grazie!`;
+
+let url="https://wa.me/393286714428?text="+encodeURIComponent(messaggio);
+
+window.open(url,"_blank");
+
+});
+
+</script>
+
+</body>
+</html>
