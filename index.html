@@ -49,8 +49,18 @@ margin-bottom:20px;
 h2{
 
 text-align:center;
-margin-bottom:30px;
+margin-bottom:10px;
 color:#111;
+
+}
+
+.info-prenotazione{
+
+text-align:center;
+font-size:13px;
+color:#666;
+margin-bottom:25px;
+line-height:1.5;
 
 }
 
@@ -114,6 +124,10 @@ background:#d87f00;
 
 <h2>Prenota il tuo Taxi</h2>
 
+<p class="info-prenotazione">
+La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.
+</p>
+
 <form id="bookingForm">
 
 <label>Nome e Cognome</label>
@@ -148,6 +162,7 @@ Prenota su WhatsApp
 
 </div>
 
+
 <script>
 
 document.getElementById("bookingForm").addEventListener("submit",function(e){
@@ -163,10 +178,11 @@ let ora=document.getElementById("ora").value;
 let persone=document.getElementById("persone").value;
 let note=document.getElementById("note").value;
 
-let messaggio=
-` *Nuova Prenotazione Taxi*
 
-Nome e cognomme: ${nome}
+let messaggio=
+`Nuova Prenotazione Taxi
+
+Nome: ${nome}
 
 Telefono: ${telefono}
 
@@ -182,13 +198,13 @@ ${data}
 Orario:
 ${ora}
 
-Persone:
+Numero persone:
 ${persone}
 
 Note:
 ${note || "Nessuna"}
 
-Grazie!`;
+Grazie.`;
 
 let url="https://wa.me/393286714428?text="+encodeURIComponent(messaggio);
 
