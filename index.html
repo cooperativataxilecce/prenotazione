@@ -202,43 +202,43 @@ La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa 
 <form id="bookingForm">
 
 
-<label>Nome e Cognome</label>
+<label>Nome e Cognome/Name and surname</label>
 <input type="text" id="nome" required>
 
 
-<label>Numero di telefono</label>
+<label>Numero di telefono/Phone number</label>
 <input type="tel" id="telefono" required>
 
 
-<label>Indirizzo di partenza</label>
+<label>Indirizzo di partenza/Departure address</label>
 <input type="text" id="partenza" required>
 
 
-<label>Indirizzo di arrivo</label>
+<label>Indirizzo di arrivo/Arrival address</label>
 <input type="text" id="arrivo" required>
 
 
-<label>Data</label>
+<label>Data/Date</label>
 <input type="date" id="data" required>
 
 
-<label>Orario</label>
+<label>Orario/Time</label>
 <input type="time" id="ora" required>
 
 
-<label>Numero persone</label>
+<label>Numero persone/Number of people</label>
 <input type="number" id="persone" min="1" required>
 
 
 <div class="checkbox-group">
 
-<label>Servizi aggiuntivi</label>
+<label>Servizi aggiuntivi/Additional serices</label>
 
 <div class="checkbox-item">
 <input type="checkbox" id="animali">
 
 <label for="animali">
-Viaggio con animale domestico
+Viaggio con animale domestico/Travelling with a pet
 </label>
 
 </div>
@@ -246,7 +246,7 @@ Viaggio con animale domestico
 </div>
 
 
-<label>Note extra (facoltativo)</label>
+<label>Note extra/Extra notes (facoltativo)</label>
 <textarea id="note"></textarea>
 
 
@@ -298,7 +298,9 @@ let nome=document.getElementById("nome").value;
 let telefono=document.getElementById("telefono").value;
 let partenza=document.getElementById("partenza").value;
 let arrivo=document.getElementById("arrivo").value;
-let data=document.getElementById("data").value;
+let dataOriginale=document.getElementById("data").value;
+
+let data = dataOriginale.split("-").reverse().join("/");
 let ora=document.getElementById("ora").value;
 let persone=document.getElementById("persone").value;
 let note=document.getElementById("note").value;
