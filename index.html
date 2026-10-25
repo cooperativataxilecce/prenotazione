@@ -1,10 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Prenota un Taxi | Cooperativa Taxi Lecce</title>
 
 <style>
@@ -34,35 +33,31 @@ body {
 
 .logo {
     display: block;
-    margin: auto;
+    margin: 0 auto 20px;
     width: 180px;
     max-width: 100%;
-    margin-bottom: 20px;
 }
 
 .lang-switch {
     display: flex;
-    justify-content: flex-end;
-    gap: 6px;
+    justify-content: center;
     margin-bottom: 18px;
 }
 
-.lang-switch button {
-    width: auto;
-    margin: 0;
-    padding: 8px 12px;
+.lang-switch select {
+    width: 100%;
+    max-width: 220px;
+    padding: 11px 14px;
     background: white;
-    color: #444;
+    color: #333;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: normal;
+    border-radius: 10px;
+    font-size: 15px;
     cursor: pointer;
 }
 
-.lang-switch button.active {
-    background: #f39c12;
-    color: white;
+.lang-switch select:focus {
+    outline: 2px solid rgba(243,156,18,.3);
     border-color: #f39c12;
 }
 
@@ -203,188 +198,324 @@ textarea {
     }
 }
 </style>
-
 </head>
 
 <body>
-
 <div class="container">
 
-    <div class="lang-switch" aria-label="Seleziona lingua">
-        <button type="button" data-lang="it" class="active" aria-pressed="true">🇮🇹 IT</button>
-        <button type="button" data-lang="en" aria-pressed="false">🇬🇧 EN</button>
+    <div class="lang-switch">
+        <select id="languageSwitcher" aria-label="Select language">
+            <option value="it">Italiano</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+        </select>
     </div>
 
-    <img src="logo.png" class="logo" alt="Cooperativa Taxi Lecce">
+    <img src="logo.png" class="logo" alt="Cooperativa Taxi Lecce" data-i18n-alt="logoAlt">
 
-    <h2 data-it="Prenota il tuo Taxi" data-en="Book Your Taxi">
-        Prenota il tuo Taxi
-    </h2>
+    <h2 data-i18n="heading">Prenota il tuo Taxi</h2>
 
-    <p class="info-prenotazione"
-       data-it="La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce."
-       data-en="Your booking is confirmed only after confirmation by Cooperativa Taxi Lecce.">
+    <p class="info-prenotazione" data-i18n="bookingInfo">
         La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.
     </p>
 
-    <form id="bookingForm">
-
-        <label for="nome" data-it="Nome e cognome" data-en="Full name">
-            Nome e cognome
-        </label>
+    <form id="bookingForm" novalidate>
+        <label for="nome" data-i18n="fullName">Nome e cognome</label>
         <input type="text" id="nome" autocomplete="name" required>
 
-        <label for="telefono" data-it="Numero di telefono" data-en="Phone number">
-            Numero di telefono
-        </label>
+        <label for="telefono" data-i18n="phone">Numero di telefono</label>
         <input type="tel" id="telefono" autocomplete="tel" required>
 
-        <label for="partenza" data-it="Indirizzo di partenza" data-en="Pickup address">
-            Indirizzo di partenza
-        </label>
+        <label for="partenza" data-i18n="pickup">Indirizzo di partenza</label>
         <input type="text" id="partenza" autocomplete="street-address" required>
 
-        <label for="arrivo" data-it="Indirizzo di arrivo" data-en="Destination address">
-            Indirizzo di arrivo
-        </label>
+        <label for="arrivo" data-i18n="destination">Indirizzo di arrivo</label>
         <input type="text" id="arrivo" required>
 
-        <label for="data" data-it="Data" data-en="Date">Data</label>
+        <label for="data" data-i18n="date">Data</label>
         <input type="date" id="data" required>
 
-        <label for="ora" data-it="Orario" data-en="Time">Orario</label>
+        <label for="ora" data-i18n="time">Orario</label>
         <input type="time" id="ora" required>
 
-        <label for="persone" data-it="Numero di persone" data-en="Number of passengers">
-            Numero di persone
-        </label>
+        <label for="persone" data-i18n="passengers">Numero di persone</label>
         <input type="number" id="persone" min="1" step="1" required>
 
         <div class="checkbox-group">
-
-            <label data-it="Servizi aggiuntivi" data-en="Additional services">
-                Servizi aggiuntivi
-            </label>
+            <label data-i18n="additionalServices">Servizi aggiuntivi</label>
 
             <div class="checkbox-item">
                 <input type="checkbox" id="animali">
-                <label for="animali"
-                       data-it="Viaggio con animale domestico"
-                       data-en="Travelling with a pet">
-                    Viaggio con animale domestico
-                </label>
+                <label for="animali" data-i18n="pet">Viaggio con animale domestico</label>
             </div>
-
         </div>
 
-        <label for="note"
-               data-it="Note extra (facoltativo)"
-               data-en="Additional notes (optional)">
-            Note extra (facoltativo)
-        </label>
+        <label for="note" data-i18n="notes">Note extra (facoltativo)</label>
         <textarea id="note"></textarea>
 
         <div class="payment-info">
-            <strong data-it="Pagamento anticipato" data-en="Advance payment">
-                Pagamento anticipato
-            </strong>
-
-            <p data-it="Per alcune prenotazioni, a discrezione della Cooperativa Taxi Lecce, può essere richiesto il pagamento anticipato tramite link SumUp. In tali casi, la prenotazione sarà confermata esclusivamente dopo la ricezione del pagamento."
-               data-en="For some bookings, Cooperativa Taxi Lecce may require advance payment through a SumUp link at its discretion. In these cases, the booking will only be confirmed once payment has been received.">
+            <strong data-i18n="advancePayment">Pagamento anticipato</strong>
+            <p data-i18n="paymentInfo">
                 Per alcune prenotazioni, a discrezione della Cooperativa Taxi Lecce, può essere richiesto il pagamento anticipato tramite link SumUp. In tali casi, la prenotazione sarà confermata esclusivamente dopo la ricezione del pagamento.
             </p>
         </div>
 
         <div class="privacy">
             <input type="checkbox" id="privacy" required>
-
             <label for="privacy" id="privacyLabel">
                 Dichiaro di aver letto e accettato
-                <a href="https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy"
-                   target="_blank" rel="noopener noreferrer">l'informativa sulla privacy</a>
+                <a href="https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">l'informativa sulla privacy</a>
                 e i
-                <a href="https://www.cooperativataxilecce.it/pagina/termini-e-condizioni"
-                   target="_blank" rel="noopener noreferrer">Termini e Condizioni</a>.
+                <a href="https://www.cooperativataxilecce.it/pagina/termini-e-condizioni" target="_blank" rel="noopener noreferrer">Termini e Condizioni</a>.
             </label>
         </div>
 
-        <button type="submit" class="submit-btn"
-                data-it="Prenota su WhatsApp"
-                data-en="Book on WhatsApp">
+        <button type="submit" class="submit-btn" data-i18n="submit">
             Prenota su WhatsApp
         </button>
-
     </form>
-
 </div>
 
 <script>
 const parametri = new URLSearchParams(window.location.search);
+const lingueSupportate = ["it", "en", "fr", "es", "de"];
 let linguaCorrente = "it";
 
+const traduzioni = {
+    it: {
+        pageTitle: "Prenota un Taxi | Cooperativa Taxi Lecce",
+        switchLabel: "Seleziona lingua",
+        logoAlt: "Cooperativa Taxi Lecce",
+        heading: "Prenota il tuo Taxi",
+        bookingInfo: "La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.",
+        fullName: "Nome e cognome",
+        phone: "Numero di telefono",
+        pickup: "Indirizzo di partenza",
+        destination: "Indirizzo di arrivo",
+        date: "Data",
+        time: "Orario",
+        passengers: "Numero di persone",
+        additionalServices: "Servizi aggiuntivi",
+        pet: "Viaggio con animale domestico",
+        notes: "Note extra (facoltativo)",
+        advancePayment: "Pagamento anticipato",
+        paymentInfo: "Per alcune prenotazioni, a discrezione della Cooperativa Taxi Lecce, può essere richiesto il pagamento anticipato tramite link SumUp. In tali casi, la prenotazione sarà confermata esclusivamente dopo la ricezione del pagamento.",
+        privacyBefore: "Dichiaro di aver letto e accettato ",
+        privacyPolicy: "l'informativa sulla privacy",
+        privacyMiddle: " e i ",
+        terms: "Termini e Condizioni",
+        submit: "Prenota su WhatsApp",
+        privacyError: "Devi accettare l'informativa sulla privacy e i Termini e Condizioni per procedere.",
+        requiredError: "Compila tutti i campi obbligatori prima di continuare."
+    },
+
+    en: {
+        pageTitle: "Book a Taxi | Cooperativa Taxi Lecce",
+        switchLabel: "Select language",
+        logoAlt: "Cooperativa Taxi Lecce",
+        heading: "Book Your Taxi",
+        bookingInfo: "Your booking is considered confirmed only after confirmation by Cooperativa Taxi Lecce.",
+        fullName: "Full name",
+        phone: "Phone number",
+        pickup: "Pickup address",
+        destination: "Destination address",
+        date: "Date",
+        time: "Time",
+        passengers: "Number of passengers",
+        additionalServices: "Additional services",
+        pet: "Travelling with a pet",
+        notes: "Additional notes (optional)",
+        advancePayment: "Advance payment",
+        paymentInfo: "For some bookings, Cooperativa Taxi Lecce may require advance payment through a SumUp link at its discretion. In these cases, the booking will only be confirmed once payment has been received.",
+        privacyBefore: "I confirm that I have read and accepted the ",
+        privacyPolicy: "Privacy Policy",
+        privacyMiddle: " and the ",
+        terms: "Terms and Conditions",
+        submit: "Book on WhatsApp",
+        privacyError: "You must accept the Privacy Policy and Terms and Conditions to continue.",
+        requiredError: "Please complete all required fields before continuing."
+    },
+
+    fr: {
+        pageTitle: "Réserver un taxi | Cooperativa Taxi Lecce",
+        switchLabel: "Choisir la langue",
+        logoAlt: "Cooperativa Taxi Lecce",
+        heading: "Réservez votre taxi",
+        bookingInfo: "La réservation est confirmée uniquement après confirmation par Cooperativa Taxi Lecce.",
+        fullName: "Nom et prénom",
+        phone: "Numéro de téléphone",
+        pickup: "Adresse de prise en charge",
+        destination: "Adresse de destination",
+        date: "Date",
+        time: "Heure",
+        passengers: "Nombre de passagers",
+        additionalServices: "Services supplémentaires",
+        pet: "Voyage avec un animal domestique",
+        notes: "Notes supplémentaires (facultatif)",
+        advancePayment: "Paiement anticipé",
+        paymentInfo: "Pour certaines réservations, Cooperativa Taxi Lecce peut, à sa discrétion, demander un paiement anticipé via un lien SumUp. Dans ce cas, la réservation sera confirmée uniquement après réception du paiement.",
+        privacyBefore: "Je déclare avoir lu et accepté la ",
+        privacyPolicy: "Politique de confidentialité",
+        privacyMiddle: " ainsi que les ",
+        terms: "Conditions générales",
+        submit: "Réserver sur WhatsApp",
+        privacyError: "Vous devez accepter la Politique de confidentialité et les Conditions générales pour continuer.",
+        requiredError: "Veuillez remplir tous les champs obligatoires avant de continuer."
+    },
+
+    es: {
+        pageTitle: "Reservar un taxi | Cooperativa Taxi Lecce",
+        switchLabel: "Seleccionar idioma",
+        logoAlt: "Cooperativa Taxi Lecce",
+        heading: "Reserva tu taxi",
+        bookingInfo: "La reserva solo se considera confirmada después de recibir la confirmación de Cooperativa Taxi Lecce.",
+        fullName: "Nombre y apellidos",
+        phone: "Número de teléfono",
+        pickup: "Dirección de recogida",
+        destination: "Dirección de destino",
+        date: "Fecha",
+        time: "Hora",
+        passengers: "Número de pasajeros",
+        additionalServices: "Servicios adicionales",
+        pet: "Viajo con una mascota",
+        notes: "Notas adicionales (opcional)",
+        advancePayment: "Pago por adelantado",
+        paymentInfo: "Para algunas reservas, Cooperativa Taxi Lecce puede solicitar, a su discreción, un pago por adelantado mediante un enlace de SumUp. En estos casos, la reserva solo se confirmará una vez recibido el pago.",
+        privacyBefore: "Declaro que he leído y aceptado la ",
+        privacyPolicy: "Política de privacidad",
+        privacyMiddle: " y los ",
+        terms: "Términos y condiciones",
+        submit: "Reservar por WhatsApp",
+        privacyError: "Debes aceptar la Política de privacidad y los Términos y condiciones para continuar.",
+        requiredError: "Completa todos los campos obligatorios antes de continuar."
+    },
+
+    de: {
+        pageTitle: "Taxi buchen | Cooperativa Taxi Lecce",
+        switchLabel: "Sprache auswählen",
+        logoAlt: "Cooperativa Taxi Lecce",
+        heading: "Buchen Sie Ihr Taxi",
+        bookingInfo: "Die Buchung gilt erst nach der Bestätigung durch Cooperativa Taxi Lecce als bestätigt.",
+        fullName: "Vor- und Nachname",
+        phone: "Telefonnummer",
+        pickup: "Abholadresse",
+        destination: "Zieladresse",
+        date: "Datum",
+        time: "Uhrzeit",
+        passengers: "Anzahl der Fahrgäste",
+        additionalServices: "Zusätzliche Services",
+        pet: "Fahrt mit einem Haustier",
+        notes: "Zusätzliche Hinweise (optional)",
+        advancePayment: "Vorauszahlung",
+        paymentInfo: "Für einige Buchungen kann Cooperativa Taxi Lecce nach eigenem Ermessen eine Vorauszahlung über einen SumUp-Link verlangen. In diesen Fällen wird die Buchung erst nach Zahlungseingang bestätigt.",
+        privacyBefore: "Ich bestätige, dass ich die ",
+        privacyPolicy: "Datenschutzerklärung",
+        privacyMiddle: " und die ",
+        terms: "Allgemeinen Geschäftsbedingungen",
+        submit: "Über WhatsApp buchen",
+        privacyError: "Sie müssen die Datenschutzerklärung und die Allgemeinen Geschäftsbedingungen akzeptieren, um fortzufahren.",
+        requiredError: "Bitte füllen Sie alle Pflichtfelder aus, bevor Sie fortfahren."
+    }
+};
+
+const privacyUrl = "https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy";
+const termsUrl = "https://www.cooperativataxilecce.it/pagina/termini-e-condizioni";
+
 function getLanguage() {
-    const lang = parametri.get("lang");
+    const dallaUrl = parametri.get("lang");
 
-    if (lang === "it" || lang === "en") return lang;
+    if (lingueSupportate.includes(dallaUrl)) {
+        return dallaUrl;
+    }
 
-    const salvata = localStorage.getItem("ctl_lang");
+    try {
+        const salvata = localStorage.getItem("ctl_lang");
 
-    return salvata === "en" ? "en" : "it";
+        if (lingueSupportate.includes(salvata)) {
+            return salvata;
+        }
+    } catch (error) {
+        // Il modulo funziona anche se localStorage non è disponibile.
+    }
+
+    return "it";
 }
 
 function setLanguage(lang) {
-    if (lang !== "it" && lang !== "en") return;
+    if (!lingueSupportate.includes(lang)) return;
 
     linguaCorrente = lang;
-    localStorage.setItem("ctl_lang", lang);
-    document.documentElement.lang = lang;
 
-    document.querySelectorAll("[data-it][data-en]").forEach(element => {
-        element.textContent = element.getAttribute("data-" + lang);
-    });
-
-    document.querySelectorAll(".lang-switch button").forEach(button => {
-        const attivo = button.dataset.lang === lang;
-        button.classList.toggle("active", attivo);
-        button.setAttribute("aria-pressed", String(attivo));
-    });
-
-    const privacyLabel = document.getElementById("privacyLabel");
-
-    if (lang === "en") {
-        privacyLabel.innerHTML =
-            'I confirm that I have read and accepted the ' +
-            '<a href="https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>' +
-            ' and the ' +
-            '<a href="https://www.cooperativataxilecce.it/pagina/termini-e-condizioni" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.';
-
-        document.title = "Book a Taxi | Cooperativa Taxi Lecce";
-    } else {
-        privacyLabel.innerHTML =
-            'Dichiaro di aver letto e accettato ' +
-            '<a href="https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">l\'informativa sulla privacy</a>' +
-            ' e i ' +
-            '<a href="https://www.cooperativataxilecce.it/pagina/termini-e-condizioni" target="_blank" rel="noopener noreferrer">Termini e Condizioni</a>.';
-
-        document.title = "Prenota un Taxi | Cooperativa Taxi Lecce";
+    try {
+        localStorage.setItem("ctl_lang", lang);
+    } catch (error) {
+        // La lingua resta attiva per la sessione corrente.
     }
+
+    document.documentElement.lang = lang;
+    document.title = traduzioni[lang].pageTitle;
+
+    const languageSwitcher = document.getElementById("languageSwitcher");
+    languageSwitcher.setAttribute("aria-label", traduzioni[lang].switchLabel);
+    languageSwitcher.value = lang;
+
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+        const key = element.dataset.i18n;
+
+        if (traduzioni[lang][key] !== undefined) {
+            element.textContent = traduzioni[lang][key];
+        }
+    });
+
+    document.querySelectorAll("[data-i18n-alt]").forEach(element => {
+        const key = element.dataset.i18nAlt;
+
+        if (traduzioni[lang][key] !== undefined) {
+            element.alt = traduzioni[lang][key];
+        }
+    });
+
+    const t = traduzioni[lang];
+
+    document.getElementById("privacyLabel").innerHTML =
+        `${t.privacyBefore}<a href="${privacyUrl}" target="_blank" rel="noopener noreferrer">${t.privacyPolicy}</a>` +
+        `${t.privacyMiddle}<a href="${termsUrl}" target="_blank" rel="noopener noreferrer">${t.terms}</a>.`;
 }
 
-document.querySelectorAll(".lang-switch button").forEach(button => {
-    button.addEventListener("click", () => {
-        setLanguage(button.dataset.lang);
-    });
+document.getElementById("languageSwitcher").addEventListener("change", function() {
+    setLanguage(this.value);
 });
 
 document.getElementById("bookingForm").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    const lang = linguaCorrente;
+    const t = traduzioni[linguaCorrente];
+
+    const campiObbligatori = [
+        document.getElementById("nome"),
+        document.getElementById("telefono"),
+        document.getElementById("partenza"),
+        document.getElementById("arrivo"),
+        document.getElementById("data"),
+        document.getElementById("ora"),
+        document.getElementById("persone")
+    ];
+
+    const campoVuoto = campiObbligatori.find(campo => !campo.value.trim());
+    const numeroPersone = Number(document.getElementById("persone").value);
+    const passeggeriNonValidi = !Number.isInteger(numeroPersone) || numeroPersone < 1;
+
+    if (campoVuoto || passeggeriNonValidi) {
+        alert(t.requiredError);
+        (campoVuoto || document.getElementById("persone")).focus();
+        return;
+    }
 
     if (!document.getElementById("privacy").checked) {
-        alert(lang === "en"
-            ? "You must accept the Privacy Policy and Terms and Conditions to continue."
-            : "Devi accettare l'informativa sulla privacy e i Termini e Condizioni per procedere.");
+        alert(t.privacyError);
+        document.getElementById("privacy").focus();
         return;
     }
 
@@ -397,13 +528,9 @@ document.getElementById("bookingForm").addEventListener("submit", function(e) {
     const persone = document.getElementById("persone").value;
     const note = document.getElementById("note").value.trim();
     const animali = document.getElementById("animali").checked ? "Sì" : "No";
-
     const data = dataOriginale.split("-").reverse().join("/");
 
-    const fraseConferma = lang === "en"
-        ? "The request is subject to confirmation by Cooperativa Taxi Lecce."
-        : "La richiesta è soggetta a conferma da parte della Cooperativa Taxi Lecce.";
-
+    // Il messaggio WhatsApp resta sempre in italiano.
     const messaggio = `RICHIESTA PRENOTAZIONE TAXI
 
 Nome e cognome:
@@ -435,17 +562,16 @@ ${note || "Nessuna"}
 
 Il cliente ha dichiarato di aver letto e accettato l'informativa sulla privacy e i Termini e Condizioni.
 
-${fraseConferma}
+La richiesta è soggetta a conferma da parte della Cooperativa Taxi Lecce.
 
 Grazie.`;
 
     const url = "https://wa.me/393286714428?text=" + encodeURIComponent(messaggio);
 
-    window.open(url, "_blank");
+    window.open(url, "_blank", "noopener,noreferrer");
 });
 
 setLanguage(getLanguage());
 </script>
-
 </body>
 </html>
