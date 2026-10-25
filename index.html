@@ -23,6 +23,7 @@ body {
 }
 
 .container {
+    position: relative;
     background: white;
     max-width: 650px;
     width: 100%;
@@ -39,35 +40,35 @@ body {
 }
 
 .form-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    display: block;
     margin-bottom: 10px;
 }
 
 .form-heading h2 {
-    flex: 1;
     text-align: center;
-    margin: 0;
+    margin: 0 0 10px;
 }
 
 .lang-switch {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-shrink: 0;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    display: block;
+    margin: 0;
+    padding: 0;
 }
 
 .lang-switch select {
-    width: 155px;
+    display: block;
+    width: 145px;
     max-width: 100%;
-    padding: 10px 12px;
+    padding: 9px 28px 9px 10px;
     background: #fff;
     color: #333;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,.04);
 }
@@ -210,21 +211,18 @@ textarea {
     }
 
     .container {
-        padding: 22px;
-    }
-
-    .form-heading {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .form-heading h2 {
-        width: 100%;
+        padding: 35px 22px 22px;
     }
 
     .lang-switch {
-        justify-content: center;
-        width: 100%;
+        top: 8px;
+        right: 8px;
+    }
+
+    .lang-switch select {
+        width: 125px;
+        padding: 7px 20px 7px 8px;
+        font-size: 12px;
     }
 }
 </style>
@@ -233,20 +231,20 @@ textarea {
 <body>
 <div class="container">
 
+    <div class="lang-switch">
+        <select id="languageSwitcher" aria-label="Seleziona lingua">
+            <option value="it" selected>Italiano</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
+        </select>
+    </div>
+
     <img src="logo.png" class="logo" alt="Cooperativa Taxi Lecce" data-i18n-alt="logoAlt">
 
     <div class="form-heading">
         <h2 data-i18n="heading">Prenota il tuo Taxi</h2>
-
-        <div class="lang-switch">
-            <select id="languageSwitcher" aria-label="Seleziona lingua">
-                <option value="it">Italiano</option>
-                <option value="en">English</option>
-                <option value="fr">Français</option>
-                <option value="es">Español</option>
-                <option value="de">Deutsch</option>
-            </select>
-        </div>
     </div>
 
     <p class="info-prenotazione" data-i18n="bookingInfo">
@@ -455,15 +453,11 @@ const traduzioni = {
 const privacyUrl = "https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy";
 const termsUrl = "https://www.cooperativataxilecce.it/pagina/termini-e-condizioni";
 
-function getLanguage() {
-    // Il modulo parte sempre in italiano a ogni apertura.
-    return "it";
-}
-
 function setLanguage(lang) {
     if (!lingueSupportate.includes(lang)) return;
 
     linguaCorrente = lang;
+
     document.documentElement.lang = lang;
     document.title = traduzioni[lang].pageTitle;
 
@@ -515,7 +509,8 @@ document.getElementById("bookingForm").addEventListener("submit", function(e) {
 
     const campoVuoto = campiObbligatori.find(campo => !campo.value.trim());
     const numeroPersone = Number(document.getElementById("persone").value);
-    const passeggeriNonValidi = !Number.isInteger(numeroPersone) || numeroPersone < 1;
+    const passeggeriNonValidi =
+        !Number.isInteger(numeroPersone) || numeroPersone < 1;
 
     if (campoVuoto || passeggeriNonValidi) {
         alert(t.requiredError);
@@ -576,11 +571,14 @@ La richiesta è soggetta a conferma da parte della Cooperativa Taxi Lecce.
 
 Grazie.`;
 
-    const url = "https://wa.me/393286714428?text=" + encodeURIComponent(messaggio);
+    const url =
+        "https://wa.me/393286714428?text=" + encodeURIComponent(messaggio);
+
     window.open(url, "_blank", "noopener,noreferrer");
 });
 
-setLanguage(getLanguage());
+// Ogni apertura della pagina inizia in italiano.
+setLanguage("it");
 </script>
 </body>
 </html>
