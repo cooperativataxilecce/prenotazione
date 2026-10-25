@@ -38,22 +38,38 @@ body {
     max-width: 100%;
 }
 
+.form-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.form-heading h2 {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+}
+
 .lang-switch {
     display: flex;
-    justify-content: center;
-    margin-bottom: 18px;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .lang-switch select {
-    width: 100%;
-    max-width: 220px;
-    padding: 11px 14px;
-    background: white;
+    width: 155px;
+    max-width: 100%;
+    padding: 10px 12px;
+    background: #fff;
     color: #333;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,.04);
 }
 
 .lang-switch select:focus {
@@ -188,13 +204,27 @@ textarea {
     background: #d87f00;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
     body {
         padding: 15px;
     }
 
     .container {
         padding: 22px;
+    }
+
+    .form-heading {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .form-heading h2 {
+        width: 100%;
+    }
+
+    .lang-switch {
+        justify-content: center;
+        width: 100%;
     }
 }
 </style>
@@ -203,25 +233,28 @@ textarea {
 <body>
 <div class="container">
 
-    <div class="lang-switch">
-        <select id="languageSwitcher" aria-label="Select language">
-            <option value="it">Italiano</option>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="es">Español</option>
-            <option value="de">Deutsch</option>
-        </select>
-    </div>
-
     <img src="logo.png" class="logo" alt="Cooperativa Taxi Lecce" data-i18n-alt="logoAlt">
 
-    <h2 data-i18n="heading">Prenota il tuo Taxi</h2>
+    <div class="form-heading">
+        <h2 data-i18n="heading">Prenota il tuo Taxi</h2>
+
+        <div class="lang-switch">
+            <select id="languageSwitcher" aria-label="Seleziona lingua">
+                <option value="it">Italiano</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="es">Español</option>
+                <option value="de">Deutsch</option>
+            </select>
+        </div>
+    </div>
 
     <p class="info-prenotazione" data-i18n="bookingInfo">
         La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.
     </p>
 
     <form id="bookingForm" novalidate>
+
         <label for="nome" data-i18n="fullName">Nome e cognome</label>
         <input type="text" id="nome" autocomplete="name" required>
 
@@ -279,7 +312,6 @@ textarea {
 </div>
 
 <script>
-const parametri = new URLSearchParams(window.location.search);
 const lingueSupportate = ["it", "en", "fr", "es", "de"];
 let linguaCorrente = "it";
 
@@ -424,22 +456,7 @@ const privacyUrl = "https://www.cooperativataxilecce.it/pagina/informativa-sulla
 const termsUrl = "https://www.cooperativataxilecce.it/pagina/termini-e-condizioni";
 
 function getLanguage() {
-    const dallaUrl = parametri.get("lang");
-
-    if (lingueSupportate.includes(dallaUrl)) {
-        return dallaUrl;
-    }
-
-    try {
-        const salvata = localStorage.getItem("ctl_lang");
-
-        if (lingueSupportate.includes(salvata)) {
-            return salvata;
-        }
-    } catch (error) {
-        // Il modulo funziona anche se localStorage non è disponibile.
-    }
-
+    // Il modulo parte sempre in italiano a ogni apertura.
     return "it";
 }
 
@@ -447,13 +464,6 @@ function setLanguage(lang) {
     if (!lingueSupportate.includes(lang)) return;
 
     linguaCorrente = lang;
-
-    try {
-        localStorage.setItem("ctl_lang", lang);
-    } catch (error) {
-        // La lingua resta attiva per la sessione corrente.
-    }
-
     document.documentElement.lang = lang;
     document.title = traduzioni[lang].pageTitle;
 
@@ -567,7 +577,6 @@ La richiesta è soggetta a conferma da parte della Cooperativa Taxi Lecce.
 Grazie.`;
 
     const url = "https://wa.me/393286714428?text=" + encodeURIComponent(messaggio);
-
     window.open(url, "_blank", "noopener,noreferrer");
 });
 
