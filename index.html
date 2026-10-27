@@ -866,7 +866,13 @@ function aggiornaValiditaOrario() {
 
 /* Aggiornamenti in tempo reale */
 personeInput.addEventListener("input", aggiornaAvvisoPasseggeri);
-dataInput.addEventListener("change", aggiornaValiditaOrario);
+dataInput.addEventListener("change", () => {
+    aggiornaValiditaOrario();
+});
+
+dataInput.addEventListener("input", () => {
+    aggiornaValiditaOrario();
+});
 oraInput.addEventListener("input", aggiornaValiditaOrario);
 oraInput.addEventListener("change", aggiornaValiditaOrario);
 
