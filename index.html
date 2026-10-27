@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -283,6 +284,37 @@ textarea {
     min-height: 120px;
 }
 
+/* Avviso automatico per più di 4 passeggeri */
+.passenger-warning {
+    margin-top: 9px;
+    padding: 12px 14px;
+    border: 1px solid #f0c27d;
+    border-radius: 10px;
+    background: #fff8eb;
+    color: #805000;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.passenger-warning[hidden],
+.time-error[hidden] {
+    display: none;
+}
+
+/* Errore per orario passato */
+#bookingForm input.time-invalid {
+    border-color: #dc2626 !important;
+    background: #fff5f5 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .10) !important;
+}
+
+.time-error {
+    margin-top: 7px;
+    color: #dc2626;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
 /* Servizi aggiuntivi */
 .checkbox-group {
     margin-top: 25px;
@@ -555,10 +587,12 @@ textarea {
         <input type="date" id="data" required>
 
         <label for="ora" data-i18n="time">Orario</label>
-        <input type="time" id="ora" required>
+        <input type="time" id="ora" required aria-describedby="timeError">
+        <p id="timeError" class="time-error" role="alert" aria-live="polite" hidden></p>
 
         <label for="persone" data-i18n="passengers">Numero di persone</label>
-        <input type="number" id="persone" min="1" step="1" required>
+        <input type="number" id="persone" min="1" step="1" required aria-describedby="passengerWarning">
+        <p id="passengerWarning" class="passenger-warning" data-i18n="passengerWarning" role="status" aria-live="polite" hidden></p>
 
         <div class="checkbox-group">
             <label data-i18n="additionalServices">Servizi aggiuntivi</label>
@@ -626,6 +660,8 @@ const traduzioni = {
         submit: "Prenota su WhatsApp",
         loading: "Apertura di WhatsApp...",
         privacyError: "Devi accettare l'informativa sulla privacy e i Termini e Condizioni per procedere.",
+        passengerWarning: "Per più di 4 passeggeri sono necessari 2 taxi, che verranno pagati singolarmente. Esempio: 5 persone richiedono 2 taxi, ciascuno con la propria tariffa.",
+        pastTimeError: "Impossibile selezionare un orario passato.",
         requiredError: "Compila tutti i campi obbligatori prima di continuare."
     },
 
@@ -654,6 +690,8 @@ const traduzioni = {
         submit: "Book on WhatsApp",
         loading: "Opening WhatsApp...",
         privacyError: "You must accept the Privacy Policy and Terms and Conditions to continue.",
+        passengerWarning: "More than 4 passengers require 2 taxis, each paid for separately. Example: 5 passengers require 2 taxis, each charged at its own fare.",
+        pastTimeError: "You cannot select a time in the past.",
         requiredError: "Please complete all required fields before continuing."
     },
 
@@ -682,6 +720,8 @@ const traduzioni = {
         submit: "Réserver sur WhatsApp",
         loading: "Ouverture de WhatsApp...",
         privacyError: "Vous devez accepter la Politique de confidentialité et les Conditions générales pour continuer.",
+        passengerWarning: "Plus de 4 passagers nécessitent 2 taxis, chacun payé séparément. Exemple : 5 personnes nécessitent 2 taxis, chacun facturé individuellement.",
+        pastTimeError: "Impossible de sélectionner une heure passée.",
         requiredError: "Veuillez remplir tous les champs obligatoires avant de continuer."
     },
 
@@ -710,6 +750,8 @@ const traduzioni = {
         submit: "Reservar por WhatsApp",
         loading: "Abriendo WhatsApp...",
         privacyError: "Debes aceptar la Política de privacidad y los Términos y condiciones para continuar.",
+        passengerWarning: "Más de 4 pasajeros requieren 2 taxis, que se pagan por separado. Ejemplo: 5 personas necesitan 2 taxis, cada uno con su propia tarifa.",
+        pastTimeError: "No se puede seleccionar una hora pasada.",
         requiredError: "Completa todos los campos obligatorios antes de continuar."
     },
 
@@ -738,6 +780,8 @@ const traduzioni = {
         submit: "Über WhatsApp buchen",
         loading: "WhatsApp wird geöffnet...",
         privacyError: "Sie müssen die Datenschutzerklärung und die Allgemeinen Geschäftsbedingungen akzeptieren, um fortzufahren.",
+        passengerWarning: "Mehr als 4 Fahrgäste benötigen 2 Taxis, die jeweils separat bezahlt werden. Beispiel: 5 Personen benötigen 2 Taxis, jedes mit eigenem Fahrpreis.",
+        pastTimeError: "Eine Uhrzeit in der Vergangenheit kann nicht ausgewählt werden.",
         requiredError: "Bitte füllen Sie alle Pflichtfelder aus, bevor Sie fortfahren."
     }
 };
@@ -752,6 +796,86 @@ const form = document.getElementById("bookingForm");
 const submitButton = form.querySelector(".submit-btn");
 const buttonText = submitButton.querySelector(".button-text");
 let invioInCorso = false;
+
+const dataInput = document.getElementById("data");
+const oraInput = document.getElementById("ora");
+const personeInput = document.getElementById("persone");
+const passengerWarning = document.getElementById("passengerWarning");
+const timeError = document.getElementById("timeError");
+
+/* Restituisce la data di oggi nel formato richiesto dal campo date */
+function dataLocaleOggi() {
+    const oggi = new Date();
+    const anno = oggi.getFullYear();
+    const mese = String(oggi.getMonth() + 1).padStart(2, "0");
+    const giorno = String(oggi.getDate()).padStart(2, "0");
+
+    return `${anno}-${mese}-${giorno}`;
+}
+
+/* Mostra l'avviso quando i passeggeri sono più di quattro */
+function aggiornaAvvisoPasseggeri() {
+    const numero = Number(personeInput.value);
+
+    passengerWarning.hidden =
+        personeInput.value.trim() === "" ||
+        !Number.isFinite(numero) ||
+        numero <= 4;
+}
+
+/* Impedisce di selezionare un orario già passato per oggi */
+function aggiornaValiditaOrario() {
+    const oggi = dataLocaleOggi();
+
+    dataInput.min = oggi;
+
+    if (dataInput.value === oggi) {
+        const adesso = new Date();
+        const ore = String(adesso.getHours()).padStart(2, "0");
+        const minuti = String(adesso.getMinutes()).padStart(2, "0");
+
+        oraInput.min = `${ore}:${minuti}`;
+    } else {
+        oraInput.removeAttribute("min");
+    }
+
+    const dataNelPassato =
+        dataInput.value !== "" && dataInput.value < oggi;
+
+    const orarioPassato =
+        dataInput.value === oggi &&
+        oraInput.value !== "" &&
+        oraInput.value < oraInput.min;
+
+    if (dataNelPassato || orarioPassato) {
+        oraInput.classList.add("time-invalid");
+        oraInput.setAttribute("aria-invalid", "true");
+        timeError.textContent = traduzioni[linguaCorrente].pastTimeError;
+        timeError.hidden = false;
+
+        return false;
+    }
+
+    oraInput.classList.remove("time-invalid");
+    oraInput.removeAttribute("aria-invalid");
+    timeError.hidden = true;
+    timeError.textContent = "";
+
+    return true;
+}
+
+/* Aggiornamenti in tempo reale */
+personeInput.addEventListener("input", aggiornaAvvisoPasseggeri);
+dataInput.addEventListener("change", aggiornaValiditaOrario);
+oraInput.addEventListener("input", aggiornaValiditaOrario);
+oraInput.addEventListener("change", aggiornaValiditaOrario);
+
+/* Ricontrolla l'orario quando si torna sulla pagina */
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+        aggiornaValiditaOrario();
+    }
+});
 
 function setLanguage(lang) {
     if (!lingueSupportate.includes(lang)) return;
@@ -788,6 +912,11 @@ function setLanguage(lang) {
         `${t.privacyMiddle}<a href="${termsUrl}" target="_blank" rel="noopener noreferrer">${t.terms}</a>.`;
 
     buttonText.textContent = invioInCorso ? t.loading : t.submit;
+
+    /* Mantiene tradotto anche l'eventuale messaggio d'errore */
+    if (!timeError.hidden) {
+        timeError.textContent = t.pastTimeError;
+    }
 }
 
 document.getElementById("languageSwitcher").addEventListener("change", function() {
@@ -799,6 +928,12 @@ form.addEventListener("submit", function(e) {
 
     if (invioInCorso) return;
 
+    /* Blocca l'invio se la data o l'orario non sono validi */
+    if (!aggiornaValiditaOrario()) {
+        oraInput.focus();
+        return;
+    }
+
     const t = traduzioni[linguaCorrente];
 
     const campiObbligatori = [
@@ -806,20 +941,20 @@ form.addEventListener("submit", function(e) {
         document.getElementById("telefono"),
         document.getElementById("partenza"),
         document.getElementById("arrivo"),
-        document.getElementById("data"),
-        document.getElementById("ora"),
-        document.getElementById("persone")
+        dataInput,
+        oraInput,
+        personeInput
     ];
 
     const campoVuoto = campiObbligatori.find(campo => !campo.value.trim());
-    const numeroPersone = Number(document.getElementById("persone").value);
+    const numeroPersone = Number(personeInput.value);
 
     const passeggeriNonValidi =
         !Number.isInteger(numeroPersone) || numeroPersone < 1;
 
     if (campoVuoto || passeggeriNonValidi) {
         alert(t.requiredError);
-        (campoVuoto || document.getElementById("persone")).focus();
+        (campoVuoto || personeInput).focus();
         return;
     }
 
@@ -833,14 +968,14 @@ form.addEventListener("submit", function(e) {
     const telefono = document.getElementById("telefono").value.trim();
     const partenza = document.getElementById("partenza").value.trim();
     const arrivo = document.getElementById("arrivo").value.trim();
-    const dataOriginale = document.getElementById("data").value;
-    const ora = document.getElementById("ora").value;
-    const persone = document.getElementById("persone").value;
+    const dataOriginale = dataInput.value;
+    const ora = oraInput.value;
+    const persone = personeInput.value;
     const note = document.getElementById("note").value.trim();
     const animali = document.getElementById("animali").checked ? "Sì" : "No";
     const data = dataOriginale.split("-").reverse().join("/");
 
-    // Il messaggio WhatsApp resta sempre in italiano.
+    /* Il messaggio WhatsApp resta sempre in italiano */
     const messaggio = `RICHIESTA PRENOTAZIONE TAXI
 
 Nome e cognome:
@@ -909,7 +1044,9 @@ Grazie.`;
     }, 3000);
 });
 
-// Ogni apertura della pagina inizia in italiano.
+/* Aggiorna i controlli iniziali e mantiene l'italiano all'apertura */
+aggiornaAvvisoPasseggeri();
+aggiornaValiditaOrario();
 setLanguage("it");
 </script>
 </body>
