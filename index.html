@@ -1,1016 +1,1105 @@
 
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#fff7ed">
-<title>Prenota un Taxi | Cooperativa Taxi Lecce</title>
-
-<style>
-:root {
-    --orange: #f39c12;
-    --orange-dark: #d87f00;
-    --orange-soft: rgba(243, 156, 18, .13);
-    --text: #171717;
-    --muted: #686868;
-    --border: #e5e5e5;
-    --surface: #ffffff;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-html {
-    min-height: 100%;
-    scroll-behavior: smooth;
-}
-
-body {
-    min-height: 100vh;
-    position: relative;
-    isolation: isolate;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 20px;
-    background: #fff7ed;
-    color: var(--text);
-    overflow-x: hidden;
-}
-
-/* Sfondo arancione intenso, sfumato e animato in loop */
-body::before,
-body::after {
-    content: "";
-    position: fixed;
-    z-index: -1;
-    pointer-events: none;
-    border-radius: 50%;
-    filter: blur(75px);
-    will-change: transform, opacity;
-}
-
-body::before {
-    width: 650px;
-    height: 650px;
-    top: -180px;
-    left: -180px;
-    background: radial-gradient(
-        circle,
-        rgba(255, 132, 0, .60) 0%,
-        rgba(255, 165, 45, .38) 35%,
-        rgba(255, 195, 105, .17) 60%,
-        transparent 75%
-    );
-    animation: orangeLoopOne 12s ease-in-out infinite alternate;
-}
-
-body::after {
-    width: 600px;
-    height: 600px;
-    right: -170px;
-    bottom: -200px;
-    background: radial-gradient(
-        circle,
-        rgba(255, 153, 0, .48) 0%,
-        rgba(255, 185, 70, .30) 40%,
-        rgba(255, 210, 140, .14) 62%,
-        transparent 76%
-    );
-    animation: orangeLoopTwo 15s ease-in-out infinite alternate;
-}
-
-@keyframes orangeLoopOne {
-    0% {
-        transform: translate3d(0, 0, 0) scale(.9);
-        opacity: .7;
-    }
-
-    50% {
-        transform: translate3d(38vw, 20vh, 0) scale(1.2);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translate3d(15vw, 48vh, 0) scale(1.05);
-        opacity: .8;
-    }
-}
-
-@keyframes orangeLoopTwo {
-    0% {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: .65;
-    }
-
-    50% {
-        transform: translate3d(-35vw, -28vh, 0) scale(1.22);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translate3d(-12vw, -48vh, 0) scale(.92);
-        opacity: .75;
-    }
-}
-
-/* Scheda principale */
-.container {
-    position: relative;
-    background: var(--surface);
-    max-width: 650px;
-    width: 100%;
-    padding: 35px;
-    border: 1px solid rgba(230, 170, 85, .13);
-    border-radius: 22px;
-    box-shadow:
-        0 18px 55px rgba(55, 37, 15, .075),
-        0 3px 12px rgba(55, 37, 15, .035);
-    animation: cardEntrance .6s cubic-bezier(.2, .75, .25, 1) both;
-}
-
-@keyframes cardEntrance {
-    from {
-        opacity: 0;
-        transform: translateY(22px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.logo {
-    display: block;
-    margin: 0 auto 20px;
-    width: 180px;
-    max-width: 100%;
-}
-
-.form-heading {
-    display: block;
-    margin-bottom: 10px;
-}
-
-.form-heading h2 {
-    text-align: center;
-    margin: 0 0 10px;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #111;
-    line-height: 1.4;
-}
-
-.info-prenotazione {
-    text-align: center;
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 25px;
-    line-height: 1.6;
-}
-
-/* Selettore lingua */
-.lang-switch {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 10;
-}
-
-.lang-switch select {
-    display: block;
-    width: 145px;
-    max-width: 100%;
-    padding: 9px 28px 9px 10px;
-    background: #fff;
-    color: #333;
-    border: 1px solid #e5e5e5;
-    border-radius: 10px;
-    font-size: 13px;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, .035);
-    transition:
-        border-color .25s ease,
-        box-shadow .25s ease,
-        background-color .25s ease;
-}
-
-.lang-switch select:hover {
-    border-color: #edc58d;
-}
-
-.lang-switch select:focus-visible {
-    outline: none;
-    border-color: var(--orange);
-    box-shadow: 0 0 0 4px var(--orange-soft);
-}
-
-/* Etichette animate */
-#bookingForm > label,
-.checkbox-group > label {
-    font-weight: 700;
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 7px;
-    color: #292929;
-    transform-origin: left center;
-    transition:
-        color .22s ease,
-        transform .22s ease;
-}
-
-#bookingForm > label:has(+ input:focus),
-#bookingForm > label:has(+ textarea:focus) {
-    color: var(--orange-dark);
-    transform: translateX(2px);
-}
-
-/* Campi */
-#bookingForm input:not([type="checkbox"]),
-#bookingForm textarea,
-#bookingForm select {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #dedede;
-    border-radius: 11px;
-    background: #fff;
-    color: #222;
-    font-size: 15px;
-    transition:
-        border-color .24s ease,
-        box-shadow .24s ease,
-        background-color .24s ease,
-        transform .24s ease;
-}
-
-#bookingForm input:not([type="checkbox"]):hover,
-#bookingForm textarea:hover,
-#bookingForm select:hover {
-    border-color: #e8c18b;
-}
-
-#bookingForm input:not([type="checkbox"]):focus,
-#bookingForm textarea:focus,
-#bookingForm select:focus {
-    outline: none;
-    border-color: var(--orange);
-    box-shadow: 0 0 0 4px rgba(243, 156, 18, .12);
-    background: #fffefd;
-}
-
-#bookingForm input::placeholder,
-#bookingForm textarea::placeholder {
-    color: #a0a0a0;
-}
-
-#bookingForm input:focus-visible,
-#bookingForm textarea:focus-visible,
-#bookingForm select:focus-visible {
-    scroll-margin-top: 20px;
-}
-
-textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-/* Avviso automatico per più di 4 passeggeri */
-.passenger-warning {
-    margin-top: 9px;
-    padding: 12px 14px;
-    border: 1px solid #f0c27d;
-    border-radius: 10px;
-    background: #fff8eb;
-    color: #805000;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-.passenger-warning[hidden],
-.time-error[hidden] {
-    display: none;
-}
-
-/* Errore per orario passato */
-#bookingForm input.time-invalid {
-    border-color: #dc2626 !important;
-    background: #fff5f5 !important;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, .10) !important;
-}
-
-.time-error {
-    margin-top: 7px;
-    color: #dc2626;
-    font-size: 13px;
-    line-height: 1.45;
-}
-
-/* Servizi aggiuntivi */
-.checkbox-group {
-    margin-top: 25px;
-}
-
-.checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: #555;
-    margin-top: 12px;
-}
-
-.checkbox-item input,
-.privacy input {
-    accent-color: var(--orange-dark);
-    cursor: pointer;
-}
-
-.checkbox-item input {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-    transition: transform .18s ease;
-}
-
-.checkbox-item input:active,
-.privacy input:active {
-    transform: scale(.9);
-}
-
-.checkbox-item label {
-    margin: 0;
-    font-weight: normal;
-    cursor: pointer;
-    line-height: 1.5;
-}
-
-/* Privacy */
-.privacy {
-    margin-top: 25px;
-    font-size: 14px;
-    color: #555;
-    display: flex;
-    align-items: flex-start;
-    gap: 9px;
-}
-
-.privacy input {
-    width: 17px;
-    height: 17px;
-    margin-top: 3px;
-    flex-shrink: 0;
-}
-
-.privacy label {
-    margin: 0;
-    font-weight: normal;
-    line-height: 1.6;
-}
-
-.privacy a {
-    color: var(--orange-dark);
-    text-decoration: none;
-    transition: color .2s ease;
-}
-
-.privacy a:hover {
-    color: #a85e00;
-    text-decoration: underline;
-}
-
-/* Informazioni sul pagamento */
-.payment-info {
-    margin-top: 25px;
-    padding: 17px;
-    background: #fffaf3;
-    border: 1px solid #f4e7d4;
-    border-radius: 12px;
-    font-size: 14px;
-    color: #555;
-    line-height: 1.6;
-    transition:
-        background-color .25s ease,
-        border-color .25s ease;
-}
-
-.payment-info:hover {
-    background: #fff8ed;
-    border-color: #eed8b6;
-}
-
-.payment-info strong {
-    display: block;
-    color: #242424;
-    margin-bottom: 8px;
-}
-
-/* Pulsante di prenotazione */
-.submit-btn {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    min-height: 56px;
-    margin-top: 30px;
-    padding: 16px;
-    background: var(--orange);
-    border: 1px solid transparent;
-    color: white;
-    font-size: 17px;
-    font-weight: 700;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 5px 14px rgba(243, 156, 18, .17);
-    transition:
-        background-color .22s ease,
-        box-shadow .22s ease,
-        transform .18s ease,
-        opacity .2s ease;
-}
-
-.submit-btn:hover:not(:disabled) {
-    background: var(--orange-dark);
-    box-shadow: 0 8px 20px rgba(216, 127, 0, .24);
-    transform: translateY(-2px);
-}
-
-.submit-btn:active:not(:disabled) {
-    transform: translateY(1px) scale(.985);
-    box-shadow: 0 2px 7px rgba(216, 127, 0, .18);
-}
-
-.submit-btn:focus-visible {
-    outline: 3px solid rgba(243, 156, 18, .35);
-    outline-offset: 4px;
-}
-
-.submit-btn:disabled {
-    cursor: wait;
-    opacity: .82;
-    box-shadow: none;
-}
-
-/* Indicatore di caricamento */
-.submit-btn .spinner {
-    display: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, .45);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-    flex-shrink: 0;
-}
-
-.submit-btn.is-loading .spinner {
-    display: inline-block;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Schermi piccoli */
-@media (max-width: 520px) {
-    body {
-        padding: 18px 12px;
-        align-items: flex-start;
-    }
-
-    body::before {
-        width: 420px;
-        height: 420px;
-        filter: blur(60px);
-    }
-
-    body::after {
-        width: 380px;
-        height: 380px;
-        filter: blur(60px);
-    }
-
-    .container {
-        padding: 38px 22px 24px;
-        border-radius: 18px;
-    }
-
-    .lang-switch {
-        top: 8px;
-        right: 8px;
-    }
-
-    .lang-switch select {
-        width: 125px;
-        padding: 7px 20px 7px 8px;
-        font-size: 12px;
-    }
-
-    .logo {
-        width: 160px;
-    }
-
-    .info-prenotazione {
-        font-size: 12px;
-    }
-
-    .submit-btn {
-        font-size: 16px;
-    }
-}
-
-/* Accessibilità: rispetta chi disattiva le animazioni */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fffaf5">
+    <title>Prenota un Taxi | Cooperativa Taxi Lecce</title>
+
+    <style>
+        :root {
+            --orange: #f39c12;
+            --orange-dark: #d87f00;
+            --orange-soft: rgba(243, 156, 18, .13);
+            --text: #171717;
+            --muted: #686868;
+            --border: #e5e5e5;
+            --surface: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html {
+            min-height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            position: relative;
+            isolation: isolate;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: #fffaf5;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Sfondo animato */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            z-index: -1;
+            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(65px);
+            will-change: transform;
+        }
+
+        body::before {
+            width: 420px;
+            height: 420px;
+            top: -150px;
+            left: -120px;
+            background: rgba(243, 156, 18, .12);
+            animation: ambientMove 18s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            width: 360px;
+            height: 360px;
+            bottom: -150px;
+            right: -100px;
+            background: rgba(255, 190, 90, .13);
+            animation: ambientMove 22s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes ambientMove {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate3d(55px, 35px, 0) scale(1.12);
+            }
+
+            100% {
+                transform: translate3d(-25px, 65px, 0) scale(.95);
+            }
+        }
+
+        /* Scheda principale */
+        .container {
+            position: relative;
+            background: var(--surface);
+            max-width: 650px;
+            width: 100%;
+            padding: 35px;
+            border: 1px solid rgba(230, 170, 85, .13);
+            border-radius: 22px;
+            box-shadow:
+                0 18px 55px rgba(55, 37, 15, .075),
+                0 3px 12px rgba(55, 37, 15, .035);
+            animation: cardEntrance .6s cubic-bezier(.2, .75, .25, 1) both;
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 180px;
+            max-width: 100%;
+        }
+
+        .form-heading {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .form-heading h2 {
+            text-align: center;
+            margin: 0 0 10px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #111;
+            line-height: 1.4;
+        }
+
+        .info-prenotazione {
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Selettore lingua */
+        .lang-switch {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 10;
+        }
+
+        .lang-switch select {
+            display: block;
+            width: 145px;
+            max-width: 100%;
+            padding: 9px 28px 9px 10px;
+            background: #fff;
+            color: #333;
+            border: 1px solid #e5e5e5;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .035);
+            transition:
+                border-color .25s ease,
+                box-shadow .25s ease,
+                background-color .25s ease;
+        }
+
+        .lang-switch select:hover {
+            border-color: #edc58d;
+        }
+
+        .lang-switch select:focus-visible {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px var(--orange-soft);
+        }
+
+        /* Etichette animate */
+        #bookingForm > label,
+        .checkbox-group > label {
+            font-weight: 700;
+            display: block;
+            margin-top: 20px;
+            margin-bottom: 7px;
+            color: #292929;
+            transform-origin: left center;
+            transition:
+                color .22s ease,
+                transform .22s ease;
+        }
+
+        #bookingForm > label:has(+ input:focus),
+        #bookingForm > label:has(+ textarea:focus) {
+            color: var(--orange-dark);
+            transform: translateX(2px);
+        }
+
+        /* Campi */
+        #bookingForm input:not([type="checkbox"]),
+        #bookingForm textarea,
+        #bookingForm select {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #dedede;
+            border-radius: 11px;
+            background: #fff;
+            color: #222;
+            font-size: 15px;
+            transition:
+                border-color .24s ease,
+                box-shadow .24s ease,
+                background-color .24s ease,
+                transform .24s ease;
+        }
+
+        #bookingForm input:not([type="checkbox"]):hover,
+        #bookingForm textarea:hover,
+        #bookingForm select:hover {
+            border-color: #e8c18b;
+        }
+
+        #bookingForm input:not([type="checkbox"]):focus,
+        #bookingForm textarea:focus,
+        #bookingForm select:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px rgba(243, 156, 18, .12);
+            background: #fffefd;
+        }
+
+        #bookingForm input::placeholder,
+        #bookingForm textarea::placeholder {
+            color: #a0a0a0;
+        }
+
+        #bookingForm input:focus-visible,
+        #bookingForm textarea:focus-visible,
+        #bookingForm select:focus-visible {
+            scroll-margin-top: 20px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Avviso per più di 4 passeggeri */
+        .passenger-warning {
+            margin-top: 8px;
+            padding: 12px 13px;
+            border: 1px solid #f0d19c;
+            border-radius: 10px;
+            background: #fff8eb;
+            color: #79500b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Errori di data e orario */
+        .field-error {
+            margin-top: 7px;
+            color: #c62828;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        #bookingForm input.field-invalid {
+            border-color: #c62828 !important;
+            background: #fff8f8 !important;
+            box-shadow: 0 0 0 3px rgba(198, 40, 40, .10) !important;
+        }
+
+        /* Servizi aggiuntivi */
+        .checkbox-group {
+            margin-top: 25px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #555;
+            margin-top: 12px;
+        }
+
+        .checkbox-item input,
+        .privacy input {
+            accent-color: var(--orange-dark);
+            cursor: pointer;
+        }
+
+        .checkbox-item input {
+            width: 17px;
+            height: 17px;
+            flex-shrink: 0;
+            transition: transform .18s ease;
+        }
+
+        .checkbox-item input:active,
+        .privacy input:active {
+            transform: scale(.9);
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        /* Privacy */
+        .privacy {
+            margin-top: 25px;
+            font-size: 14px;
+            color: #555;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+        }
+
+        .privacy input {
+            width: 17px;
+            height: 17px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .privacy label {
+            margin: 0;
+            font-weight: normal;
+            line-height: 1.6;
+        }
+
+        .privacy a {
+            color: var(--orange-dark);
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .privacy a:hover {
+            color: #a85e00;
+            text-decoration: underline;
+        }
+
+        /* Informazioni sul pagamento */
+        .payment-info {
+            margin-top: 25px;
+            padding: 17px;
+            background: #fffaf3;
+            border: 1px solid #f4e7d4;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            transition:
+                background-color .25s ease,
+                border-color .25s ease;
+        }
+
+        .payment-info:hover {
+            background: #fff8ed;
+            border-color: #eed8b6;
+        }
+
+        .payment-info strong {
+            display: block;
+            color: #242424;
+            margin-bottom: 8px;
+        }
+
+        /* Pulsante di prenotazione */
+        .submit-btn {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 56px;
+            margin-top: 30px;
+            padding: 16px;
+            background: var(--orange);
+            border: 1px solid transparent;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 5px 14px rgba(243, 156, 18, .17);
+            transition:
+                background-color .22s ease,
+                box-shadow .22s ease,
+                transform .18s ease,
+                opacity .2s ease;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            background: var(--orange-dark);
+            box-shadow: 0 8px 20px rgba(216, 127, 0, .24);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(1px) scale(.985);
+            box-shadow: 0 2px 7px rgba(216, 127, 0, .18);
+        }
+
+        .submit-btn:focus-visible {
+            outline: 3px solid rgba(243, 156, 18, .35);
+            outline-offset: 4px;
+        }
+
+        .submit-btn:disabled {
+            cursor: wait;
+            opacity: .82;
+            box-shadow: none;
+        }
+
+        /* Indicatore di caricamento */
+        .submit-btn .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, .45);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        .submit-btn.is-loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Schermi piccoli */
+        @media (max-width: 520px) {
+            body {
+                padding: 18px 12px;
+                align-items: flex-start;
+            }
+
+            body::before {
+                width: 280px;
+                height: 280px;
+            }
+
+            body::after {
+                width: 250px;
+                height: 250px;
+            }
+
+            .container {
+                padding: 38px 22px 24px;
+                border-radius: 18px;
+            }
+
+            .lang-switch {
+                top: 8px;
+                right: 8px;
+            }
+
+            .lang-switch select {
+                width: 125px;
+                padding: 7px 20px 7px 8px;
+                font-size: 12px;
+            }
+
+            .logo {
+                width: 160px;
+            }
+
+            .info-prenotazione {
+                font-size: 12px;
+            }
+
+            .submit-btn {
+                font-size: 16px;
+            }
+        }
+
+        /* Accessibilità: rispetta chi disattiva le animazioni */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<div class="container">
+    <div class="container">
 
-    <div class="lang-switch">
-        <select id="languageSwitcher" aria-label="Seleziona lingua">
-            <option value="it" selected>Italiano</option>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="es">Español</option>
-            <option value="de">Deutsch</option>
-        </select>
-    </div>
-
-    <img src="logo.png" class="logo" alt="Cooperativa Taxi Lecce" data-i18n-alt="logoAlt">
-
-    <div class="form-heading">
-        <h2 data-i18n="heading">Prenota il tuo Taxi</h2>
-    </div>
-
-    <p class="info-prenotazione" data-i18n="bookingInfo">
-        La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.
-    </p>
-
-    <form id="bookingForm" novalidate>
-
-        <label for="nome" data-i18n="fullName">Nome e cognome</label>
-        <input type="text" id="nome" autocomplete="name" required>
-
-        <label for="telefono" data-i18n="phone">Numero di telefono</label>
-        <input type="tel" id="telefono" autocomplete="tel" required>
-
-        <label for="partenza" data-i18n="pickup">Indirizzo di partenza</label>
-        <input type="text" id="partenza" autocomplete="street-address" required>
-
-        <label for="arrivo" data-i18n="destination">Indirizzo di arrivo</label>
-        <input type="text" id="arrivo" required>
-
-        <label for="data" data-i18n="date">Data</label>
-        <input type="date" id="data" required>
-
-        <label for="ora" data-i18n="time">Orario</label>
-        <input type="time" id="ora" required aria-describedby="timeError">
-        <p id="timeError" class="time-error" role="alert" aria-live="polite" hidden></p>
-
-        <label for="persone" data-i18n="passengers">Numero di persone</label>
-        <input type="number" id="persone" min="1" step="1" required aria-describedby="passengerWarning">
-        <p id="passengerWarning" class="passenger-warning" data-i18n="passengerWarning" role="status" aria-live="polite" hidden></p>
-
-        <div class="checkbox-group">
-            <label data-i18n="additionalServices">Servizi aggiuntivi</label>
-
-            <div class="checkbox-item">
-                <input type="checkbox" id="animali">
-                <label for="animali" data-i18n="pet">Viaggio con animale domestico</label>
-            </div>
+        <div class="lang-switch">
+            <select id="languageSwitcher" aria-label="Seleziona lingua">
+                <option value="it" selected>Italiano</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+                <option value="es">Español</option>
+                <option value="de">Deutsch</option>
+            </select>
         </div>
 
-        <label for="note" data-i18n="notes">Note extra (facoltativo)</label>
-        <textarea id="note"></textarea>
+        <img src="logo.png" class="logo" alt="Cooperativa Taxi Lecce" data-i18n-alt="logoAlt">
 
-        <div class="payment-info">
-            <strong data-i18n="advancePayment">Pagamento anticipato</strong>
-            <p data-i18n="paymentInfo">
-                Per alcune prenotazioni, a discrezione della Cooperativa Taxi Lecce, può essere richiesto il pagamento anticipato tramite link SumUp. In tali casi, la prenotazione sarà confermata esclusivamente dopo la ricezione del pagamento.
+        <div class="form-heading">
+            <h2 data-i18n="heading">Prenota il tuo Taxi</h2>
+        </div>
+
+        <p class="info-prenotazione" data-i18n="bookingInfo">
+            La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.
+        </p>
+
+        <form id="bookingForm" novalidate>
+
+            <label for="nome" data-i18n="fullName">Nome e cognome</label>
+            <input type="text" id="nome" autocomplete="name" required>
+
+            <label for="telefono" data-i18n="phone">Numero di telefono</label>
+            <input type="tel" id="telefono" autocomplete="tel" required>
+
+            <label for="partenza" data-i18n="pickup">Indirizzo di partenza</label>
+            <input type="text" id="partenza" autocomplete="street-address" required>
+
+            <label for="arrivo" data-i18n="destination">Indirizzo di arrivo</label>
+            <input type="text" id="arrivo" required>
+
+            <label for="data" data-i18n="date">Data (GG/MM/AAAA)</label>
+            <input
+                type="text"
+                id="data"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="GG/MM/AAAA"
+                maxlength="10"
+                aria-describedby="dateError"
+                required
+            >
+            <p id="dateError" class="field-error" data-i18n="dateError" hidden>
+                Inserisci una data valida nel formato GG/MM/AAAA e non nel passato.
             </p>
-        </div>
 
-        <div class="privacy">
-            <input type="checkbox" id="privacy" required>
-            <label for="privacy" id="privacyLabel">
-                Dichiaro di aver letto e accettato
-                <a href="https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">l'informativa sulla privacy</a>
-                e i
-                <a href="https://www.cooperativataxilecce.it/pagina/termini-e-condizioni" target="_blank" rel="noopener noreferrer">Termini e Condizioni</a>.
-            </label>
-        </div>
+            <label for="ora" data-i18n="time">Orario (HH:MM)</label>
+            <input
+                type="text"
+                id="ora"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="HH:MM"
+                maxlength="5"
+                aria-describedby="timeError"
+                required
+            >
+            <p id="timeError" class="field-error" data-i18n="timeError" hidden>
+                Inserisci un orario valido nel formato HH:MM.
+            </p>
 
-        <button type="submit" class="submit-btn">
-            <span class="button-text" data-i18n="submit">Prenota su WhatsApp</span>
-            <span class="spinner" aria-hidden="true"></span>
-        </button>
-    </form>
-</div>
+            <label for="persone" data-i18n="passengers">Numero di persone</label>
+            <input type="number" id="persone" min="1" step="1" required>
 
-<script>
-const lingueSupportate = ["it", "en", "fr", "es", "de"];
-let linguaCorrente = "it";
+            <p id="passengerWarning" class="passenger-warning" data-i18n="passengerWarning" hidden>
+                Per più di 4 persone sono necessari 2 taxi. Ogni taxi si paga separatamente.
+                Esempio: con 5 persone, il costo viene suddiviso tra due taxi.
+            </p>
 
-const traduzioni = {
-    it: {
-        pageTitle: "Prenota un Taxi | Cooperativa Taxi Lecce",
-        switchLabel: "Seleziona lingua",
-        logoAlt: "Cooperativa Taxi Lecce",
-        heading: "Prenota il tuo Taxi",
-        bookingInfo: "La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.",
-        fullName: "Nome e cognome",
-        phone: "Numero di telefono",
-        pickup: "Indirizzo di partenza",
-        destination: "Indirizzo di arrivo",
-        date: "Data",
-        time: "Orario",
-        passengers: "Numero di persone",
-        additionalServices: "Servizi aggiuntivi",
-        pet: "Viaggio con animale domestico",
-        notes: "Note extra (facoltativo)",
-        advancePayment: "Pagamento anticipato",
-        paymentInfo: "Per alcune prenotazioni, a discrezione della Cooperativa Taxi Lecce, può essere richiesto il pagamento anticipato tramite link SumUp. In tali casi, la prenotazione sarà confermata esclusivamente dopo la ricezione del pagamento.",
-        privacyBefore: "Dichiaro di aver letto e accettato ",
-        privacyPolicy: "l'informativa sulla privacy",
-        privacyMiddle: " e i ",
-        terms: "Termini e Condizioni",
-        submit: "Prenota su WhatsApp",
-        loading: "Apertura di WhatsApp...",
-        privacyError: "Devi accettare l'informativa sulla privacy e i Termini e Condizioni per procedere.",
-        passengerWarning: "Per più di 4 passeggeri sono necessari 2 taxi, che verranno pagati singolarmente. Esempio: 5 persone richiedono 2 taxi, ciascuno con la propria tariffa.",
-        pastTimeError: "Impossibile selezionare un orario passato.",
-        requiredError: "Compila tutti i campi obbligatori prima di continuare."
-    },
+            <div class="checkbox-group">
+                <label data-i18n="additionalServices">Servizi aggiuntivi</label>
 
-    en: {
-        pageTitle: "Book a Taxi | Cooperativa Taxi Lecce",
-        switchLabel: "Select language",
-        logoAlt: "Cooperativa Taxi Lecce",
-        heading: "Book Your Taxi",
-        bookingInfo: "Your booking is considered confirmed only after confirmation by Cooperativa Taxi Lecce.",
-        fullName: "Full name",
-        phone: "Phone number",
-        pickup: "Pickup address",
-        destination: "Destination address",
-        date: "Date",
-        time: "Time",
-        passengers: "Number of passengers",
-        additionalServices: "Additional services",
-        pet: "Travelling with a pet",
-        notes: "Additional notes (optional)",
-        advancePayment: "Advance payment",
-        paymentInfo: "For some bookings, Cooperativa Taxi Lecce may require advance payment through a SumUp link at its discretion. In these cases, the booking will only be confirmed once payment has been received.",
-        privacyBefore: "I confirm that I have read and accepted the ",
-        privacyPolicy: "Privacy Policy",
-        privacyMiddle: " and the ",
-        terms: "Terms and Conditions",
-        submit: "Book on WhatsApp",
-        loading: "Opening WhatsApp...",
-        privacyError: "You must accept the Privacy Policy and Terms and Conditions to continue.",
-        passengerWarning: "More than 4 passengers require 2 taxis, each paid for separately. Example: 5 passengers require 2 taxis, each charged at its own fare.",
-        pastTimeError: "You cannot select a time in the past.",
-        requiredError: "Please complete all required fields before continuing."
-    },
+                <div class="checkbox-item">
+                    <input type="checkbox" id="animali">
+                    <label for="animali" data-i18n="pet">Viaggio con animale domestico</label>
+                </div>
+            </div>
 
-    fr: {
-        pageTitle: "Réserver un taxi | Cooperativa Taxi Lecce",
-        switchLabel: "Choisir la langue",
-        logoAlt: "Cooperativa Taxi Lecce",
-        heading: "Réservez votre taxi",
-        bookingInfo: "La réservation est confirmée uniquement après confirmation par Cooperativa Taxi Lecce.",
-        fullName: "Nom et prénom",
-        phone: "Numéro de téléphone",
-        pickup: "Adresse de prise en charge",
-        destination: "Adresse de destination",
-        date: "Date",
-        time: "Heure",
-        passengers: "Nombre de passagers",
-        additionalServices: "Services supplémentaires",
-        pet: "Voyage avec un animal domestique",
-        notes: "Notes supplémentaires (facultatif)",
-        advancePayment: "Paiement anticipé",
-        paymentInfo: "Pour certaines réservations, Cooperativa Taxi Lecce peut, à sa discrétion, demander un paiement anticipé via un lien SumUp. Dans ce cas, la réservation sera confirmée uniquement après réception du paiement.",
-        privacyBefore: "Je déclare avoir lu et accepté la ",
-        privacyPolicy: "Politique de confidentialité",
-        privacyMiddle: " ainsi que les ",
-        terms: "Conditions générales",
-        submit: "Réserver sur WhatsApp",
-        loading: "Ouverture de WhatsApp...",
-        privacyError: "Vous devez accepter la Politique de confidentialité et les Conditions générales pour continuer.",
-        passengerWarning: "Plus de 4 passagers nécessitent 2 taxis, chacun payé séparément. Exemple : 5 personnes nécessitent 2 taxis, chacun facturé individuellement.",
-        pastTimeError: "Impossible de sélectionner une heure passée.",
-        requiredError: "Veuillez remplir tous les champs obligatoires avant de continuer."
-    },
+            <label for="note" data-i18n="notes">Note extra (facoltativo)</label>
+            <textarea id="note"></textarea>
 
-    es: {
-        pageTitle: "Reservar un taxi | Cooperativa Taxi Lecce",
-        switchLabel: "Seleccionar idioma",
-        logoAlt: "Cooperativa Taxi Lecce",
-        heading: "Reserva tu taxi",
-        bookingInfo: "La reserva solo se considera confirmada después de recibir la confirmación de Cooperativa Taxi Lecce.",
-        fullName: "Nombre y apellidos",
-        phone: "Número de teléfono",
-        pickup: "Dirección de recogida",
-        destination: "Dirección de destino",
-        date: "Fecha",
-        time: "Hora",
-        passengers: "Número de pasajeros",
-        additionalServices: "Servicios adicionales",
-        pet: "Viajo con una mascota",
-        notes: "Notas adicionales (opcional)",
-        advancePayment: "Pago por adelantado",
-        paymentInfo: "Para algunas reservas, Cooperativa Taxi Lecce puede solicitar, a su discreción, un pago por adelantado mediante un enlace de SumUp. En estos casos, la reserva solo se confirmará una vez recibido el pago.",
-        privacyBefore: "Declaro que he leído y aceptado la ",
-        privacyPolicy: "Política de privacidad",
-        privacyMiddle: " y los ",
-        terms: "Términos y condiciones",
-        submit: "Reservar por WhatsApp",
-        loading: "Abriendo WhatsApp...",
-        privacyError: "Debes aceptar la Política de privacidad y los Términos y condiciones para continuar.",
-        passengerWarning: "Más de 4 pasajeros requieren 2 taxis, que se pagan por separado. Ejemplo: 5 personas necesitan 2 taxis, cada uno con su propia tarifa.",
-        pastTimeError: "No se puede seleccionar una hora pasada.",
-        requiredError: "Completa todos los campos obligatorios antes de continuar."
-    },
+            <div class="payment-info">
+                <strong data-i18n="advancePayment">Pagamento anticipato</strong>
+                <p data-i18n="paymentInfo">
+                    Per alcune prenotazioni, a discrezione della Cooperativa Taxi Lecce, può essere
+                    richiesto il pagamento anticipato tramite link SumUp. In tali casi, la prenotazione
+                    sarà confermata esclusivamente dopo la ricezione del pagamento.
+                </p>
+            </div>
 
-    de: {
-        pageTitle: "Taxi buchen | Cooperativa Taxi Lecce",
-        switchLabel: "Sprache auswählen",
-        logoAlt: "Cooperativa Taxi Lecce",
-        heading: "Buchen Sie Ihr Taxi",
-        bookingInfo: "Die Buchung gilt erst nach der Bestätigung durch Cooperativa Taxi Lecce als bestätigt.",
-        fullName: "Vor- und Nachname",
-        phone: "Telefonnummer",
-        pickup: "Abholadresse",
-        destination: "Zieladresse",
-        date: "Datum",
-        time: "Uhrzeit",
-        passengers: "Anzahl der Fahrgäste",
-        additionalServices: "Zusätzliche Services",
-        pet: "Fahrt mit einem Haustier",
-        notes: "Zusätzliche Hinweise (optional)",
-        advancePayment: "Vorauszahlung",
-        paymentInfo: "Für einige Buchungen kann Cooperativa Taxi Lecce nach eigenem Ermessen eine Vorauszahlung über einen SumUp-Link verlangen. In diesen Fällen wird die Buchung erst nach Zahlungseingang bestätigt.",
-        privacyBefore: "Ich bestätige, dass ich die ",
-        privacyPolicy: "Datenschutzerklärung",
-        privacyMiddle: " und die ",
-        terms: "Allgemeinen Geschäftsbedingungen",
-        submit: "Über WhatsApp buchen",
-        loading: "WhatsApp wird geöffnet...",
-        privacyError: "Sie müssen die Datenschutzerklärung und die Allgemeinen Geschäftsbedingungen akzeptieren, um fortzufahren.",
-        passengerWarning: "Mehr als 4 Fahrgäste benötigen 2 Taxis, die jeweils separat bezahlt werden. Beispiel: 5 Personen benötigen 2 Taxis, jedes mit eigenem Fahrpreis.",
-        pastTimeError: "Eine Uhrzeit in der Vergangenheit kann nicht ausgewählt werden.",
-        requiredError: "Bitte füllen Sie alle Pflichtfelder aus, bevor Sie fortfahren."
-    }
-};
+            <div class="privacy">
+                <input type="checkbox" id="privacy" required>
+                <label for="privacy" id="privacyLabel">
+                    Dichiaro di aver letto e accettato
+                    <a href="https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy" target="_blank" rel="noopener noreferrer">l'informativa sulla privacy</a>
+                    e i
+                    <a href="https://www.cooperativataxilecce.it/pagina/termini-e-condizioni" target="_blank" rel="noopener noreferrer">Termini e Condizioni</a>.
+                </label>
+            </div>
 
-const privacyUrl =
-    "https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy";
+            <button type="submit" class="submit-btn" data-i18n="submit">
+                <span class="button-text">Prenota su WhatsApp</span>
+                <span class="spinner" aria-hidden="true"></span>
+            </button>
+        </form>
+    </div>
 
-const termsUrl =
-    "https://www.cooperativataxilecce.it/pagina/termini-e-condizioni";
+    <script>
+        const lingueSupportate = ["it", "en", "fr", "es", "de"];
+        let linguaCorrente = "it";
 
-const form = document.getElementById("bookingForm");
-const submitButton = form.querySelector(".submit-btn");
-const buttonText = submitButton.querySelector(".button-text");
-let invioInCorso = false;
+        const traduzioni = {
+            it: {
+                pageTitle: "Prenota un Taxi | Cooperativa Taxi Lecce",
+                switchLabel: "Seleziona lingua",
+                logoAlt: "Cooperativa Taxi Lecce",
+                heading: "Prenota il tuo Taxi",
+                bookingInfo: "La prenotazione si intende perfezionata solo dopo la conferma della Cooperativa Taxi Lecce.",
+                fullName: "Nome e cognome",
+                phone: "Numero di telefono",
+                pickup: "Indirizzo di partenza",
+                destination: "Indirizzo di arrivo",
+                date: "Data (GG/MM/AAAA)",
+                time: "Orario (HH:MM)",
+                passengers: "Numero di persone",
+                additionalServices: "Servizi aggiuntivi",
+                pet: "Viaggio con animale domestico",
+                notes: "Note extra (facoltativo)",
+                advancePayment: "Pagamento anticipato",
+                paymentInfo: "Per alcune prenotazioni, a discrezione della Cooperativa Taxi Lecce, può essere richiesto il pagamento anticipato tramite link SumUp. In tali casi, la prenotazione sarà confermata esclusivamente dopo la ricezione del pagamento.",
+                privacyBefore: "Dichiaro di aver letto e accettato ",
+                privacyPolicy: "l'informativa sulla privacy",
+                privacyMiddle: " e i ",
+                terms: "Termini e Condizioni",
+                submit: "Prenota su WhatsApp",
+                loading: "Apertura di WhatsApp...",
+                privacyError: "Devi accettare l'informativa sulla privacy e i Termini e Condizioni per procedere.",
+                passengerWarning: "Per più di 4 persone sono necessari 2 taxi. Ogni taxi si paga separatamente. Esempio: con 5 persone, il costo viene suddiviso tra due taxi.",
+                dateError: "Inserisci una data valida nel formato GG/MM/AAAA e non nel passato.",
+                timeError: "Inserisci un orario valido nel formato HH:MM.",
+                timePastError: "Per oggi non puoi scegliere un orario già passato. Modifica l’orario per continuare.",
+                requiredError: "Compila tutti i campi obbligatori prima di continuare."
+            },
 
-const dataInput = document.getElementById("data");
-const oraInput = document.getElementById("ora");
-const personeInput = document.getElementById("persone");
-const passengerWarning = document.getElementById("passengerWarning");
-const timeError = document.getElementById("timeError");
+            en: {
+                pageTitle: "Book a Taxi | Cooperativa Taxi Lecce",
+                switchLabel: "Select language",
+                logoAlt: "Cooperativa Taxi Lecce",
+                heading: "Book Your Taxi",
+                bookingInfo: "Your booking is considered confirmed only after confirmation by Cooperativa Taxi Lecce.",
+                fullName: "Full name",
+                phone: "Phone number",
+                pickup: "Pickup address",
+                destination: "Destination address",
+                date: "Date (DD/MM/YYYY)",
+                time: "Time (HH:MM)",
+                passengers: "Number of passengers",
+                additionalServices: "Additional services",
+                pet: "Travelling with a pet",
+                notes: "Additional notes (optional)",
+                advancePayment: "Advance payment",
+                paymentInfo: "For some bookings, Cooperativa Taxi Lecce may require advance payment through a SumUp link at its discretion. In these cases, the booking will only be confirmed once payment has been received.",
+                privacyBefore: "I confirm that I have read and accepted the ",
+                privacyPolicy: "Privacy Policy",
+                privacyMiddle: " and the ",
+                terms: "Terms and Conditions",
+                submit: "Book on WhatsApp",
+                loading: "Opening WhatsApp...",
+                privacyError: "You must accept the Privacy Policy and Terms and Conditions to continue.",
+                passengerWarning: "More than 4 passengers require 2 taxis. Each taxi is paid for separately. Example: for 5 passengers, the fare is split between two taxis.",
+                dateError: "Enter a valid date in DD/MM/YYYY format that is not in the past.",
+                timeError: "Enter a valid time in HH:MM format.",
+                timePastError: "You cannot choose a time that has already passed today. Change the time to continue.",
+                requiredError: "Please complete all required fields before continuing."
+            },
 
-/* Restituisce la data di oggi nel formato richiesto dal campo date */
-function dataLocaleOggi() {
-    const oggi = new Date();
-    const anno = oggi.getFullYear();
-    const mese = String(oggi.getMonth() + 1).padStart(2, "0");
-    const giorno = String(oggi.getDate()).padStart(2, "0");
+            fr: {
+                pageTitle: "Réserver un taxi | Cooperativa Taxi Lecce",
+                switchLabel: "Choisir la langue",
+                logoAlt: "Cooperativa Taxi Lecce",
+                heading: "Réservez votre taxi",
+                bookingInfo: "La réservation est confirmée uniquement après confirmation par Cooperativa Taxi Lecce.",
+                fullName: "Nom et prénom",
+                phone: "Numéro de téléphone",
+                pickup: "Adresse de prise en charge",
+                destination: "Adresse de destination",
+                date: "Date (JJ/MM/AAAA)",
+                time: "Heure (HH:MM)",
+                passengers: "Nombre de passagers",
+                additionalServices: "Services supplémentaires",
+                pet: "Voyage avec un animal domestique",
+                notes: "Notes supplémentaires (facultatif)",
+                advancePayment: "Paiement anticipé",
+                paymentInfo: "Pour certaines réservations, Cooperativa Taxi Lecce peut, à sa discrétion, demander un paiement anticipé via un lien SumUp. Dans ce cas, la réservation sera confirmée uniquement après réception du paiement.",
+                privacyBefore: "Je déclare avoir lu et accepté la ",
+                privacyPolicy: "Politique de confidentialité",
+                privacyMiddle: " ainsi que les ",
+                terms: "Conditions générales",
+                submit: "Réserver sur WhatsApp",
+                loading: "Ouverture de WhatsApp...",
+                privacyError: "Vous devez accepter la Politique de confidentialité et les Conditions générales pour continuer.",
+                passengerWarning: "Plus de 4 passagers nécessitent 2 taxis. Chaque taxi est payé séparément. Exemple : pour 5 passagers, le coût est réparti entre deux taxis.",
+                dateError: "Saisissez une date valide au format JJ/MM/AAAA, qui ne soit pas passée.",
+                timeError: "Saisissez une heure valide au format HH:MM.",
+                timePastError: "Pour aujourd’hui, vous ne pouvez pas choisir une heure déjà passée. Modifiez l’heure pour continuer.",
+                requiredError: "Veuillez remplir tous les champs obligatoires avant de continuer."
+            },
 
-    return `${anno}-${mese}-${giorno}`;
-}
+            es: {
+                pageTitle: "Reservar un taxi | Cooperativa Taxi Lecce",
+                switchLabel: "Seleccionar idioma",
+                logoAlt: "Cooperativa Taxi Lecce",
+                heading: "Reserva tu taxi",
+                bookingInfo: "La reserva solo se considera confirmada después de recibir la confirmación de Cooperativa Taxi Lecce.",
+                fullName: "Nombre y apellidos",
+                phone: "Número de teléfono",
+                pickup: "Dirección de recogida",
+                destination: "Dirección de destino",
+                date: "Fecha (DD/MM/AAAA)",
+                time: "Hora (HH:MM)",
+                passengers: "Número de pasajeros",
+                additionalServices: "Servicios adicionales",
+                pet: "Viajo con una mascota",
+                notes: "Notas adicionales (opcional)",
+                advancePayment: "Pago por adelantado",
+                paymentInfo: "Para algunas reservas, Cooperativa Taxi Lecce puede solicitar, a su discreción, un pago por adelantado mediante un enlace de SumUp. En estos casos, la reserva solo se confirmará una vez recibido el pago.",
+                privacyBefore: "Declaro que he leído y aceptado la ",
+                privacyPolicy: "Política de privacidad",
+                privacyMiddle: " y los ",
+                terms: "Términos y condiciones",
+                submit: "Reservar por WhatsApp",
+                loading: "Abriendo WhatsApp...",
+                privacyError: "Debes aceptar la Política de privacidad y los Términos y condiciones para continuar.",
+                passengerWarning: "Más de 4 pasajeros requieren 2 taxis. Cada taxi se paga por separado. Ejemplo: para 5 pasajeros, el coste se reparte entre dos taxis.",
+                dateError: "Introduce una fecha válida en formato DD/MM/AAAA que no esté en el pasado.",
+                timeError: "Introduce una hora válida en formato HH:MM.",
+                timePastError: "No puedes elegir una hora que ya haya pasado hoy. Cambia la hora para continuar.",
+                requiredError: "Completa todos los campos obligatorios antes de continuar."
+            },
 
-/* Mostra l'avviso quando i passeggeri sono più di quattro */
-function aggiornaAvvisoPasseggeri() {
-    const numero = Number(personeInput.value);
+            de: {
+                pageTitle: "Taxi buchen | Cooperativa Taxi Lecce",
+                switchLabel: "Sprache auswählen",
+                logoAlt: "Cooperativa Taxi Lecce",
+                heading: "Buchen Sie Ihr Taxi",
+                bookingInfo: "Die Buchung gilt erst nach der Bestätigung durch Cooperativa Taxi Lecce als bestätigt.",
+                fullName: "Vor- und Nachname",
+                phone: "Telefonnummer",
+                pickup: "Abholadresse",
+                destination: "Zieladresse",
+                date: "Datum (TT/MM/JJJJ)",
+                time: "Uhrzeit (HH:MM)",
+                passengers: "Anzahl der Fahrgäste",
+                additionalServices: "Zusätzliche Services",
+                pet: "Fahrt mit einem Haustier",
+                notes: "Zusätzliche Hinweise (optional)",
+                advancePayment: "Vorauszahlung",
+                paymentInfo: "Für einige Buchungen kann Cooperativa Taxi Lecce nach eigenem Ermessen eine Vorauszahlung über einen SumUp-Link verlangen. In diesen Fällen wird die Buchung erst nach Zahlungseingang bestätigt.",
+                privacyBefore: "Ich bestätige, dass ich die ",
+                privacyPolicy: "Datenschutzerklärung",
+                privacyMiddle: " und die ",
+                terms: "Allgemeinen Geschäftsbedingungen",
+                submit: "Über WhatsApp buchen",
+                loading: "WhatsApp wird geöffnet...",
+                privacyError: "Sie müssen die Datenschutzerklärung und die Allgemeinen Geschäftsbedingungen akzeptieren, um fortzufahren.",
+                passengerWarning: "Bei mehr als 4 Fahrgästen sind 2 Taxis erforderlich. Jedes Taxi wird separat bezahlt. Beispiel: Bei 5 Fahrgästen werden die Kosten auf zwei Taxis aufgeteilt.",
+                dateError: "Geben Sie ein gültiges Datum im Format TT/MM/JJJJ ein, das nicht in der Vergangenheit liegt.",
+                timeError: "Geben Sie eine gültige Uhrzeit im Format HH:MM ein.",
+                timePastError: "Für heute können Sie keine bereits vergangene Uhrzeit auswählen. Ändern Sie die Uhrzeit, um fortzufahren.",
+                requiredError: "Bitte füllen Sie alle Pflichtfelder aus, bevor Sie fortfahren."
+            }
+        };
 
-    passengerWarning.hidden =
-        personeInput.value.trim() === "" ||
-        !Number.isFinite(numero) ||
-        numero <= 4;
-}
+        const privacyUrl =
+            "https://www.cooperativataxilecce.it/pagina/informativa-sulla-privacy";
 
-/* Impedisce di selezionare un orario già passato per oggi */
-function aggiornaValiditaOrario() {
-    const oggi = dataLocaleOggi();
+        const termsUrl =
+            "https://www.cooperativataxilecce.it/pagina/termini-e-condizioni";
 
-    dataInput.min = oggi;
+        const form = document.getElementById("bookingForm");
+        const submitButton = form.querySelector(".submit-btn");
+        const buttonText = submitButton.querySelector(".button-text");
 
-    if (dataInput.value === oggi) {
-        const adesso = new Date();
-        const ore = String(adesso.getHours()).padStart(2, "0");
-        const minuti = String(adesso.getMinutes()).padStart(2, "0");
+        let invioInCorso = false;
 
-        oraInput.min = `${ore}:${minuti}`;
-    } else {
-        oraInput.removeAttribute("min");
-    }
+        const dataInput = document.getElementById("data");
+        const oraInput = document.getElementById("ora");
+        const personeInput = document.getElementById("persone");
+        const passengerWarning = document.getElementById("passengerWarning");
+        const dateError = document.getElementById("dateError");
+        const timeError = document.getElementById("timeError");
 
-    const dataNelPassato =
-        dataInput.value !== "" && dataInput.value < oggi;
+        /* Accetta esclusivamente GG/MM/AAAA e verifica che la data esista. */
+        function parseDataItaliana(value) {
+            const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
 
-    const orarioPassato =
-        dataInput.value === oggi &&
-        oraInput.value !== "" &&
-        oraInput.value < oraInput.min;
+            if (!match) {
+                return null;
+            }
 
-    if (dataNelPassato || orarioPassato) {
-        oraInput.classList.add("time-invalid");
-        oraInput.setAttribute("aria-invalid", "true");
-        timeError.textContent = traduzioni[linguaCorrente].pastTimeError;
-        timeError.hidden = false;
+            const giorno = Number(match[1]);
+            const mese = Number(match[2]);
+            const anno = Number(match[3]);
 
-        return false;
-    }
+            const data = new Date(anno, mese - 1, giorno);
 
-    oraInput.classList.remove("time-invalid");
-    oraInput.removeAttribute("aria-invalid");
-    timeError.hidden = true;
-    timeError.textContent = "";
+            if (
+                data.getFullYear() !== anno ||
+                data.getMonth() !== mese - 1 ||
+                data.getDate() !== giorno
+            ) {
+                return null;
+            }
 
-    return true;
-}
-
-/* Aggiornamenti in tempo reale */
-personeInput.addEventListener("input", aggiornaAvvisoPasseggeri);
-dataInput.addEventListener("change", () => {
-    aggiornaValiditaOrario();
-});
-
-dataInput.addEventListener("input", () => {
-    aggiornaValiditaOrario();
-});
-oraInput.addEventListener("input", aggiornaValiditaOrario);
-oraInput.addEventListener("change", aggiornaValiditaOrario);
-
-/* Ricontrolla l'orario quando si torna sulla pagina */
-document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-        aggiornaValiditaOrario();
-    }
-});
-
-function setLanguage(lang) {
-    if (!lingueSupportate.includes(lang)) return;
-
-    linguaCorrente = lang;
-
-    document.documentElement.lang = lang;
-    document.title = traduzioni[lang].pageTitle;
-
-    const languageSwitcher = document.getElementById("languageSwitcher");
-    languageSwitcher.setAttribute("aria-label", traduzioni[lang].switchLabel);
-    languageSwitcher.value = lang;
-
-    document.querySelectorAll("[data-i18n]").forEach(element => {
-        const key = element.dataset.i18n;
-
-        if (traduzioni[lang][key] !== undefined) {
-            element.textContent = traduzioni[lang][key];
+            data.setHours(0, 0, 0, 0);
+            return data;
         }
-    });
 
-    document.querySelectorAll("[data-i18n-alt]").forEach(element => {
-        const key = element.dataset.i18nAlt;
+        /* Mostra l'avviso quando il numero di persone supera 4. */
+        function aggiornaAvvisoPasseggeri() {
+            const persone = Number(personeInput.value);
 
-        if (traduzioni[lang][key] !== undefined) {
-            element.alt = traduzioni[lang][key];
+            passengerWarning.hidden = !(
+                Number.isFinite(persone) && persone > 4
+            );
         }
-    });
 
-    const t = traduzioni[lang];
+        /* Verifica data, formato dell'ora e orari già trascorsi. */
+        function aggiornaValiditaDataOra(mostraErrori = true) {
+            const t = traduzioni[linguaCorrente];
 
-    document.getElementById("privacyLabel").innerHTML =
-        `${t.privacyBefore}<a href="${privacyUrl}" target="_blank" rel="noopener noreferrer">${t.privacyPolicy}</a>` +
-        `${t.privacyMiddle}<a href="${termsUrl}" target="_blank" rel="noopener noreferrer">${t.terms}</a>.`;
+            const dataSelezionata = parseDataItaliana(dataInput.value);
 
-    buttonText.textContent = invioInCorso ? t.loading : t.submit;
+            const oraValida =
+                /^([01]\d|2[0-3]):[0-5]\d$/.test(oraInput.value.trim());
 
-    /* Mantiene tradotto anche l'eventuale messaggio d'errore */
-    if (!timeError.hidden) {
-        timeError.textContent = t.pastTimeError;
-    }
-}
+            let dataNonValida = !dataSelezionata;
+            let orarioNonValido = !oraValida;
+            let erroreOrarioPassato = false;
 
-document.getElementById("languageSwitcher").addEventListener("change", function() {
-    setLanguage(this.value);
-});
+            if (dataSelezionata) {
+                const oggi = new Date();
+                oggi.setHours(0, 0, 0, 0);
 
-form.addEventListener("submit", function(e) {
-    e.preventDefault();
+                /* Non consente di prenotare in una data passata. */
+                if (dataSelezionata < oggi) {
+                    dataNonValida = true;
+                } else if (
+                    dataSelezionata.getTime() === oggi.getTime() &&
+                    oraValida
+                ) {
+                    const [ore, minuti] = oraInput.value.split(":").map(Number);
 
-    if (invioInCorso) return;
+                    const adesso = new Date();
+                    const minutiScelti = ore * 60 + minuti;
+                    const minutiAttuali =
+                        adesso.getHours() * 60 + adesso.getMinutes();
 
-    /* Blocca l'invio se la data o l'orario non sono validi */
-    if (!aggiornaValiditaOrario()) {
-        oraInput.focus();
-        return;
-    }
+                    if (minutiScelti < minutiAttuali) {
+                        orarioNonValido = true;
+                        erroreOrarioPassato = true;
+                    }
+                }
+            }
 
-    const t = traduzioni[linguaCorrente];
+            dataInput.classList.toggle(
+                "field-invalid",
+                mostraErrori && dataNonValida
+            );
 
-    const campiObbligatori = [
-        document.getElementById("nome"),
-        document.getElementById("telefono"),
-        document.getElementById("partenza"),
-        document.getElementById("arrivo"),
-        dataInput,
-        oraInput,
-        personeInput
-    ];
+            dataInput.setAttribute(
+                "aria-invalid",
+                mostraErrori && dataNonValida ? "true" : "false"
+            );
 
-    const campoVuoto = campiObbligatori.find(campo => !campo.value.trim());
-    const numeroPersone = Number(personeInput.value);
+            dateError.hidden = !(mostraErrori && dataNonValida);
+            dateError.textContent = t.dateError;
 
-    const passeggeriNonValidi =
-        !Number.isInteger(numeroPersone) || numeroPersone < 1;
+            oraInput.classList.toggle(
+                "field-invalid",
+                mostraErrori && orarioNonValido
+            );
 
-    if (campoVuoto || passeggeriNonValidi) {
-        alert(t.requiredError);
-        (campoVuoto || personeInput).focus();
-        return;
-    }
+            oraInput.setAttribute(
+                "aria-invalid",
+                mostraErrori && orarioNonValido ? "true" : "false"
+            );
 
-    if (!document.getElementById("privacy").checked) {
-        alert(t.privacyError);
-        document.getElementById("privacy").focus();
-        return;
-    }
+            timeError.hidden = !(mostraErrori && orarioNonValido);
 
-    const nome = document.getElementById("nome").value.trim();
-    const telefono = document.getElementById("telefono").value.trim();
-    const partenza = document.getElementById("partenza").value.trim();
-    const arrivo = document.getElementById("arrivo").value.trim();
-    const dataOriginale = dataInput.value;
-    const ora = oraInput.value;
-    const persone = personeInput.value;
-    const note = document.getElementById("note").value.trim();
-    const animali = document.getElementById("animali").checked ? "Sì" : "No";
-    const data = dataOriginale.split("-").reverse().join("/");
+            timeError.textContent = erroreOrarioPassato
+                ? t.timePastError
+                : t.timeError;
 
-    /* Il messaggio WhatsApp resta sempre in italiano */
-    const messaggio = `RICHIESTA PRENOTAZIONE TAXI
+            return !dataNonValida && !orarioNonValido;
+        }
 
-Nome e cognome:
-${nome}
+        /* Durante la digitazione non cancelliamo mai il valore inserito. */
+        dataInput.addEventListener("input", () => {
+            dataInput.classList.remove("field-invalid");
+            dataInput.setAttribute("aria-invalid", "false");
+            dateError.hidden = true;
+        });
 
-Numero di telefono:
-${telefono}
+        oraInput.addEventListener("input", () => {
+            oraInput.classList.remove("field-invalid");
+            oraInput.setAttribute("aria-invalid", "false");
+            timeError.hidden = true;
+        });
 
-Indirizzo di partenza:
-${partenza}
+        dataInput.addEventListener("blur", () => {
+            if (dataInput.value.trim()) {
+                aggiornaValiditaDataOra(true);
+            }
+        });
 
-Indirizzo di arrivo:
-${arrivo}
+        oraInput.addEventListener("blur", () => {
+            if (oraInput.value.trim()) {
+                aggiornaValiditaDataOra(true);
+            }
+        });
 
-Data:
-${data}
+        dataInput.addEventListener("change", () => {
+            if (dataInput.value.trim()) {
+                aggiornaValiditaDataOra(true);
+            }
+        });
 
-Orario:
-${ora}
+        oraInput.addEventListener("change", () => {
+            if (oraInput.value.trim()) {
+                aggiornaValiditaDataOra(true);
+            }
+        });
 
-Numero persone:
-${persone}
+        personeInput.addEventListener("input", aggiornaAvvisoPasseggeri);
+        personeInput.addEventListener("change", aggiornaAvvisoPasseggeri);
 
-Animale domestico:
-${animali}
+        function setLanguage(lang) {
+            if (!lingueSupportate.includes(lang)) {
+                return;
+            }
 
-Note:
-${note || "Nessuna"}
+            linguaCorrente = lang;
+
+            document.documentElement.lang = lang;
+            document.title = traduzioni[lang].pageTitle;
+
+            const languageSwitcher =
+                document.getElementById("languageSwitcher");
+
+            languageSwitcher.setAttribute(
+                "aria-label",
+                traduzioni[lang].switchLabel
+            );
+
+            languageSwitcher.value = lang;
+
+            document.querySelectorAll("[data-i18n]").forEach(element => {
+                const key = element.dataset.i18n;
+
+                if (traduzioni[lang][key] !== undefined) {
+                    element.textContent = traduzioni[lang][key];
+                }
+            });
+
+            document.querySelectorAll("[data-i18n-alt]").forEach(element => {
+                const key = element.dataset.i18nAlt;
+
+                if (traduzioni[lang][key] !== undefined) {
+                    element.alt = traduzioni[lang][key];
+                }
+            });
+
+            const t = traduzioni[lang];
+
+            document.getElementById("privacyLabel").innerHTML =
+                `${t.privacyBefore}<a href="${privacyUrl}" target="_blank" rel="noopener noreferrer">${t.privacyPolicy}</a>` +
+                `${t.privacyMiddle}<a href="${termsUrl}" target="_blank" rel="noopener noreferrer">${t.terms}</a>.`;
+
+            /* Aggiorna il pulsante senza rimuovere lo spinner. */
+            buttonText.textContent = invioInCorso ? t.loading : t.submit;
+
+            /* Se un errore è visibile, aggiorna anche la sua traduzione. */
+            if (!dateError.hidden || !timeError.hidden) {
+                aggiornaValiditaDataOra(true);
+            }
+        }
+
+        document
+            .getElementById("languageSwitcher")
+            .addEventListener("change", function () {
+                setLanguage(this.value);
+            });
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if (invioInCorso) {
+                return;
+            }
+
+            const t = traduzioni[linguaCorrente];
+
+            const campiObbligatori = [
+                document.getElementById("nome"),
+                document.getElementById("telefono"),
+                document.getElementById("partenza"),
+                document.getElementById("arrivo"),
+                dataInput,
+                oraInput,
+                personeInput
+            ];
+
+            const campoVuoto = campiObbligatori.find(
+                campo => !campo.value.trim()
+            );
+
+            const numeroPersone = Number(personeInput.value);
+
+            const passeggeriNonValidi =
+                !Number.isInteger(numeroPersone) || numeroPersone < 1;
+
+            if (campoVuoto || passeggeriNonValidi) {
+                alert(t.requiredError);
+
+                (campoVuoto || personeInput).focus();
+                return;
+            }
+
+            /* Blocca date non valide e orari già trascorsi. */
+            if (!aggiornaValiditaDataOra(true)) {
+                const dataSelezionata = parseDataItaliana(dataInput.value);
+                const oggi = new Date();
+                oggi.setHours(0, 0, 0, 0);
+
+                if (
+                    !dataSelezionata ||
+                    dataSelezionata < oggi
+                ) {
+                    dataInput.focus();
+                } else {
+                    oraInput.focus();
+                }
+
+                return;
+            }
+
+            if (!document.getElementById("privacy").checked) {
+                alert(t.privacyError);
+                document.getElementById("privacy").focus();
+                return;
+            }
+
+            const nome =
+                document.getElementById("nome").value.trim();
+
+            const telefono =
+                document.getElementById("telefono").value.trim();
+
+            const partenza =
+                document.getElementById("partenza").value.trim();
+
+            const arrivo =
+                document.getElementById("arrivo").value.trim();
+
+            /* La data è già nel formato GG/MM/AAAA. */
+            const data = dataInput.value.trim();
+
+            const ora = oraInput.value.trim();
+            const persone = personeInput.value;
+            const note = document.getElementById("note").value.trim();
+
+            const animali =
+                document.getElementById("animali").checked ? "Sì" : "No";
+
+            /* Il messaggio WhatsApp resta sempre in italiano. */
+            const messaggio = `RICHIESTA PRENOTAZIONE TAXI
+
+Nome e cognome: ${nome}
+Numero di telefono: ${telefono}
+Indirizzo di partenza: ${partenza}
+Indirizzo di arrivo: ${arrivo}
+Data: ${data}
+Orario: ${ora}
+Numero persone: ${persone}
+Animale domestico: ${animali}
+Note: ${note || "Nessuna"}
 
 Il cliente ha dichiarato di aver letto e accettato l'informativa sulla privacy e i Termini e Condizioni.
 
@@ -1018,43 +1107,43 @@ La richiesta è soggetta a conferma da parte della Cooperativa Taxi Lecce.
 
 Grazie.`;
 
-    const url =
-        "https://wa.me/393286714428?text=" + encodeURIComponent(messaggio);
+            const url =
+                "https://wa.me/393286714428?text=" +
+                encodeURIComponent(messaggio);
 
-    /*
-     * Apre WhatsApp direttamente dal clic dell'utente.
-     * Non inseriamo attese prima di window.open().
-     */
-    const whatsappWindow = window.open(url, "_blank");
+            /*
+             * Apre WhatsApp direttamente dal clic dell'utente.
+             * Se il browser blocca la nuova finestra, usa la scheda corrente.
+             */
+            const whatsappWindow = window.open(url, "_blank");
 
-    if (!whatsappWindow) {
-        window.location.href = url;
-        return;
-    }
+            if (!whatsappWindow) {
+                window.location.href = url;
+                return;
+            }
 
-    invioInCorso = true;
-    submitButton.disabled = true;
-    submitButton.classList.add("is-loading");
-    submitButton.setAttribute("aria-busy", "true");
-    buttonText.textContent = t.loading;
+            invioInCorso = true;
+            submitButton.disabled = true;
+            submitButton.classList.add("is-loading");
+            submitButton.setAttribute("aria-busy", "true");
+            buttonText.textContent = t.loading;
 
-    /*
-     * Riabilita il pulsante dopo un breve intervallo,
-     * quando l'utente torna alla pagina.
-     */
-    window.setTimeout(() => {
-        invioInCorso = false;
-        submitButton.disabled = false;
-        submitButton.classList.remove("is-loading");
-        submitButton.removeAttribute("aria-busy");
-        buttonText.textContent = traduzioni[linguaCorrente].submit;
-    }, 3000);
-});
+            /*
+             * Riabilita il pulsante dopo un breve intervallo.
+             * Non possiamo sapere se il messaggio è stato inviato da WhatsApp.
+             */
+            window.setTimeout(() => {
+                invioInCorso = false;
+                submitButton.disabled = false;
+                submitButton.classList.remove("is-loading");
+                submitButton.removeAttribute("aria-busy");
+                buttonText.textContent = traduzioni[linguaCorrente].submit;
+            }, 3000);
+        });
 
-/* Aggiorna i controlli iniziali e mantiene l'italiano all'apertura */
-aggiornaAvvisoPasseggeri();
-aggiornaValiditaOrario();
-setLanguage("it");
-</script>
+        /* Ogni apertura della pagina inizia in italiano. */
+        setLanguage("it");
+        aggiornaAvvisoPasseggeri();
+    </script>
 </body>
 </html>
