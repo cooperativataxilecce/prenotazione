@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Prenota un Taxi | Cooperativa Taxi Lecce</title>
 
 <style>
@@ -15,7 +14,7 @@
 }
 
 body {
-    background: #f5f5f5;
+    background: linear-gradient(135deg, #fff7ed 0%, #f5f5f5 48%, #fff0dc 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,12 +24,13 @@ body {
 
 .container {
     position: relative;
-    background: white;
+    background: linear-gradient(160deg, #ffffff 0%, #fffdfb 100%);
     max-width: 650px;
     width: 100%;
     padding: 35px;
     border-radius: 18px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    border: 1px solid rgba(243, 156, 18, .10);
+    box-shadow: 0 10px 30px rgba(0,0,0,.15), 0 0 35px rgba(243,156,18,.07);
 }
 
 .logo {
@@ -72,11 +72,13 @@ body {
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,.04);
     appearance: auto;
+    transition: border-color .2s ease, box-shadow .2s ease;
 }
 
 .lang-switch select:focus {
-    outline: 2px solid rgba(243,156,18,.3);
+    outline: none;
     border-color: #f39c12;
+    box-shadow: 0 0 0 3px rgba(243,156,18,.18), 0 0 12px rgba(243,156,18,.25);
 }
 
 h2 {
@@ -99,9 +101,12 @@ label {
     display: block;
     margin-top: 18px;
     margin-bottom: 6px;
+    color: #222;
+    transition: color .2s ease, text-shadow .2s ease;
 }
 
-input:not([type="checkbox"]), textarea {
+input:not([type="checkbox"]),
+textarea {
     width: 100%;
     padding: 14px;
     border: 1px solid #ddd;
@@ -109,11 +114,22 @@ input:not([type="checkbox"]), textarea {
     font-size: 15px;
     background: #fff;
     color: #222;
+    transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
 }
 
-input:focus, textarea:focus {
-    outline: 2px solid rgba(243,156,18,.3);
+input:not([type="checkbox"]):focus,
+textarea:focus {
+    outline: none;
     border-color: #f39c12;
+    background: #fffdfa;
+    box-shadow: 0 0 0 3px rgba(243,156,18,.18), 0 0 16px rgba(243,156,18,.28);
+}
+
+/* Titolo del campo illuminato quando il relativo campo è attivo. */
+label:has(+ input:not([type="checkbox"]):focus),
+label:has(+ textarea:focus) {
+    color: #d98200;
+    text-shadow: 0 0 10px rgba(243,156,18,.28);
 }
 
 textarea {
@@ -126,6 +142,7 @@ input.field-invalid {
     border: 2px solid #d93025 !important;
     background: #fff5f5 !important;
     outline: none !important;
+    box-shadow: 0 0 0 2px rgba(217,48,37,.10) !important;
 }
 
 .field-error {
@@ -235,11 +252,12 @@ input.field-invalid {
     font-weight: bold;
     border-radius: 12px;
     cursor: pointer;
-    transition: .3s;
+    transition: background .3s ease, box-shadow .3s ease;
 }
 
 .submit-btn:hover {
     background: #d87f00;
+    box-shadow: 0 4px 14px rgba(243,156,18,.25);
 }
 
 .submit-btn:focus-visible {
@@ -302,35 +320,16 @@ input.field-invalid {
     <form id="bookingForm" novalidate>
 
         <label for="nome" data-i18n="fullName">Nome e cognome</label>
-        <input
-            type="text"
-            id="nome"
-            autocomplete="name"
-            required
-        >
+        <input type="text" id="nome" autocomplete="name" required>
 
         <label for="telefono" data-i18n="phone">Numero di telefono</label>
-        <input
-            type="tel"
-            id="telefono"
-            autocomplete="tel"
-            required
-        >
+        <input type="tel" id="telefono" autocomplete="tel" required>
 
         <label for="partenza" data-i18n="pickup">Indirizzo di partenza</label>
-        <input
-            type="text"
-            id="partenza"
-            autocomplete="street-address"
-            required
-        >
+        <input type="text" id="partenza" autocomplete="street-address" required>
 
         <label for="arrivo" data-i18n="destination">Indirizzo di arrivo</label>
-        <input
-            type="text"
-            id="arrivo"
-            required
-        >
+        <input type="text" id="arrivo" required>
 
         <label for="data" data-i18n="date">Data</label>
         <input
@@ -358,23 +357,10 @@ input.field-invalid {
         >
         <p id="timeError" class="field-error" role="alert" hidden></p>
 
-        <label for="persone" data-i18n="passengers">
-            Numero di persone
-        </label>
-        <input
-            type="number"
-            id="persone"
-            min="1"
-            step="1"
-            required
-        >
+        <label for="persone" data-i18n="passengers">Numero di persone</label>
+        <input type="number" id="persone" min="1" step="1" required>
 
-        <div
-            id="passengerWarning"
-            class="passenger-warning"
-            role="status"
-            hidden
-        >
+        <div id="passengerWarning" class="passenger-warning" role="status" hidden>
             <strong data-i18n="passengerWarningTitle">
                 Attenzione: sono necessari due taxi
             </strong>
@@ -399,9 +385,7 @@ input.field-invalid {
             </div>
         </div>
 
-        <label for="note" data-i18n="notes">
-            Note extra (facoltativo)
-        </label>
+        <label for="note" data-i18n="notes">Note extra (facoltativo)</label>
         <textarea id="note"></textarea>
 
         <div class="payment-info">
@@ -432,11 +416,7 @@ input.field-invalid {
             </label>
         </div>
 
-        <button
-            type="submit"
-            class="submit-btn"
-            data-i18n="submit"
-        >
+        <button type="submit" class="submit-btn" data-i18n="submit">
             Prenota su WhatsApp
         </button>
 
@@ -636,10 +616,7 @@ function getLanguage() {
     return "it";
 }
 
-/*
- * Inserisce automaticamente le barre nella data.
- * Esempio: 27102026 diventa 27/10/2026.
- */
+/* Inserisce automaticamente le barre nella data: 27102026 -> 27/10/2026. */
 function formattaDataDuranteInserimento(input) {
     const posizioneOriginale = input.selectionStart;
     const valoreOriginale = input.value;
@@ -648,7 +625,6 @@ function formattaDataDuranteInserimento(input) {
         .replace(/\D/g, "").length;
 
     const cifre = valoreOriginale.replace(/\D/g, "").slice(0, 8);
-
     let risultato = cifre;
 
     if (cifre.length > 4) {
@@ -662,7 +638,6 @@ function formattaDataDuranteInserimento(input) {
 
     input.value = risultato;
 
-    // Mantiene il cursore vicino alla posizione di digitazione.
     let nuovaPosizione = 0;
     let cifreContate = 0;
 
@@ -686,10 +661,7 @@ function formattaDataDuranteInserimento(input) {
     input.setSelectionRange(nuovaPosizione, nuovaPosizione);
 }
 
-/*
- * Inserisce automaticamente i due punti nell'orario.
- * Esempio: 0930 diventa 09:30.
- */
+/* Inserisce automaticamente i due punti nell'orario: 0930 -> 09:30. */
 function formattaOraDuranteInserimento(input) {
     const posizioneOriginale = input.selectionStart;
     const valoreOriginale = input.value;
@@ -698,7 +670,6 @@ function formattaOraDuranteInserimento(input) {
         .replace(/\D/g, "").length;
 
     const cifre = valoreOriginale.replace(/\D/g, "").slice(0, 4);
-
     let risultato = cifre;
 
     if (cifre.length > 2) {
@@ -730,14 +701,9 @@ function formattaOraDuranteInserimento(input) {
     input.setSelectionRange(nuovaPosizione, nuovaPosizione);
 }
 
-/*
- * Converte GG/MM/AAAA in una data verificando che esista davvero.
- * Non accetta date come 31/02/2026.
- */
+/* Converte GG/MM/AAAA in una data reale. */
 function parseDataItaliana(valore) {
-    const corrispondenza = valore.match(
-        /^(\d{2})\/(\d{2})\/(\d{4})$/
-    );
+    const corrispondenza = valore.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
 
     if (!corrispondenza) {
         return null;
@@ -746,7 +712,6 @@ function parseDataItaliana(valore) {
     const giorno = Number(corrispondenza[1]);
     const mese = Number(corrispondenza[2]);
     const anno = Number(corrispondenza[3]);
-
     const data = new Date(anno, mese - 1, giorno);
 
     if (
@@ -800,13 +765,9 @@ function mostraErroreOra(messaggio) {
     timeError.hidden = !messaggio;
 }
 
-/*
- * Controlla la data, l'orario e impedisce di prenotare
- * un orario già trascorso nella giornata di oggi.
- */
+/* Controlla data e ora e impedisce di prenotare nel passato. */
 function aggiornaValiditaDataOra() {
     const t = traduzioni[linguaCorrente];
-
     const dataSelezionata = parseDataItaliana(dataInput.value);
     const oraSelezionata = parseOra(oraInput.value);
 
@@ -876,15 +837,11 @@ function setLanguage(lang) {
     }
 
     linguaCorrente = lang;
-
     document.documentElement.lang = lang;
     document.title = traduzioni[lang].pageTitle;
 
     const languageSwitcher = document.getElementById("languageSwitcher");
-    languageSwitcher.setAttribute(
-        "aria-label",
-        traduzioni[lang].switchLabel
-    );
+    languageSwitcher.setAttribute("aria-label", traduzioni[lang].switchLabel);
     languageSwitcher.value = lang;
 
     document.querySelectorAll("[data-i18n]").forEach(element => {
@@ -909,7 +866,6 @@ function setLanguage(lang) {
         `${t.privacyBefore}<a href="${privacyUrl}" target="_blank" rel="noopener noreferrer">${t.privacyPolicy}</a>` +
         `${t.privacyMiddle}<a href="${termsUrl}" target="_blank" rel="noopener noreferrer">${t.terms}</a>.`;
 
-    // Aggiorna anche gli errori già visibili nella nuova lingua.
     aggiornaValiditaDataOra();
 }
 
@@ -920,25 +876,21 @@ document.getElementById("languageSwitcher").addEventListener(
     }
 );
 
-// Formattazione automatica della data mentre si digita.
 dataInput.addEventListener("input", function() {
     formattaDataDuranteInserimento(this);
     aggiornaValiditaDataOra();
 });
 
-// Formattazione automatica dell'orario mentre si digita.
 oraInput.addEventListener("input", function() {
     formattaOraDuranteInserimento(this);
     aggiornaValiditaDataOra();
 });
 
-// Ricontrolla quando si esce dal campo o si modifica il valore.
 dataInput.addEventListener("blur", aggiornaValiditaDataOra);
 oraInput.addEventListener("blur", aggiornaValiditaDataOra);
 dataInput.addEventListener("change", aggiornaValiditaDataOra);
 oraInput.addEventListener("change", aggiornaValiditaDataOra);
 
-// Aggiorna l'avviso quando cambia il numero di passeggeri.
 personeInput.addEventListener("input", aggiornaAvvisoPasseggeri);
 personeInput.addEventListener("change", aggiornaAvvisoPasseggeri);
 
@@ -981,7 +933,6 @@ document.getElementById("bookingForm").addEventListener(
             return;
         }
 
-        // Controllo definitivo prima di aprire WhatsApp.
         if (!aggiornaValiditaDataOra()) {
             if (dateError.hidden === false) {
                 dataInput.focus();
@@ -1010,7 +961,6 @@ document.getElementById("bookingForm").addEventListener(
             ? "Sì"
             : "No";
 
-        // Il messaggio WhatsApp resta sempre in italiano.
         const messaggio = `RICHIESTA PRENOTAZIONE TAXI
 
 Nome e cognome:
@@ -1054,7 +1004,6 @@ Grazie.`;
     }
 );
 
-// Il modulo si apre in italiano.
 setLanguage(getLanguage());
 </script>
 </body>
