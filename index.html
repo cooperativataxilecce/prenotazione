@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#fffaf5">
+<meta name="theme-color" content="#fff7ed">
 <title>Prenota un Taxi | Cooperativa Taxi Lecce</title>
 
 <style>
@@ -38,12 +37,12 @@ body {
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
-    background: #fffaf5;
+    background: #fff7ed;
     color: var(--text);
     overflow-x: hidden;
 }
 
-/* Sfondo animato */
+/* Sfondo arancione intenso, sfumato e animato in loop */
 body::before,
 body::after {
     content: "";
@@ -51,37 +50,71 @@ body::after {
     z-index: -1;
     pointer-events: none;
     border-radius: 50%;
-    filter: blur(65px);
-    will-change: transform;
+    filter: blur(75px);
+    will-change: transform, opacity;
 }
 
 body::before {
-    width: 420px;
-    height: 420px;
-    top: -150px;
-    left: -120px;
-    background: rgba(243, 156, 18, .12);
-    animation: ambientMove 18s ease-in-out infinite alternate;
+    width: 650px;
+    height: 650px;
+    top: -180px;
+    left: -180px;
+    background: radial-gradient(
+        circle,
+        rgba(255, 132, 0, .60) 0%,
+        rgba(255, 165, 45, .38) 35%,
+        rgba(255, 195, 105, .17) 60%,
+        transparent 75%
+    );
+    animation: orangeLoopOne 12s ease-in-out infinite alternate;
 }
 
 body::after {
-    width: 360px;
-    height: 360px;
-    bottom: -150px;
-    right: -100px;
-    background: rgba(255, 190, 90, .13);
-    animation: ambientMove 22s ease-in-out infinite alternate-reverse;
+    width: 600px;
+    height: 600px;
+    right: -170px;
+    bottom: -200px;
+    background: radial-gradient(
+        circle,
+        rgba(255, 153, 0, .48) 0%,
+        rgba(255, 185, 70, .30) 40%,
+        rgba(255, 210, 140, .14) 62%,
+        transparent 76%
+    );
+    animation: orangeLoopTwo 15s ease-in-out infinite alternate;
 }
 
-@keyframes ambientMove {
+@keyframes orangeLoopOne {
+    0% {
+        transform: translate3d(0, 0, 0) scale(.9);
+        opacity: .7;
+    }
+
+    50% {
+        transform: translate3d(38vw, 20vh, 0) scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate3d(15vw, 48vh, 0) scale(1.05);
+        opacity: .8;
+    }
+}
+
+@keyframes orangeLoopTwo {
     0% {
         transform: translate3d(0, 0, 0) scale(1);
+        opacity: .65;
     }
+
     50% {
-        transform: translate3d(55px, 35px, 0) scale(1.12);
+        transform: translate3d(-35vw, -28vh, 0) scale(1.22);
+        opacity: 1;
     }
+
     100% {
-        transform: translate3d(-25px, 65px, 0) scale(.95);
+        transform: translate3d(-12vw, -48vh, 0) scale(.92);
+        opacity: .75;
     }
 }
 
@@ -105,6 +138,7 @@ body::after {
         opacity: 0;
         transform: translateY(22px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -426,13 +460,15 @@ textarea {
     }
 
     body::before {
-        width: 280px;
-        height: 280px;
+        width: 420px;
+        height: 420px;
+        filter: blur(60px);
     }
 
     body::after {
-        width: 250px;
-        height: 250px;
+        width: 380px;
+        height: 380px;
+        filter: blur(60px);
     }
 
     .container {
@@ -483,11 +519,11 @@ textarea {
 
     <div class="lang-switch">
         <select id="languageSwitcher" aria-label="Seleziona lingua">
-            <option value="it" selected>🇮🇹 Italiano</option>
-            <option value="en">🇬🇧 English</option>
-            <option value="fr">🇫🇷 Français</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="de">🇩🇪 Deutsch</option>
+            <option value="it" selected>Italiano</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="de">Deutsch</option>
         </select>
     </div>
 
@@ -553,8 +589,8 @@ textarea {
             </label>
         </div>
 
-        <button type="submit" class="submit-btn" data-i18n="submit">
-            <span class="button-text">Prenota su WhatsApp</span>
+        <button type="submit" class="submit-btn">
+            <span class="button-text" data-i18n="submit">Prenota su WhatsApp</span>
             <span class="spinner" aria-hidden="true"></span>
         </button>
     </form>
@@ -751,7 +787,6 @@ function setLanguage(lang) {
         `${t.privacyBefore}<a href="${privacyUrl}" target="_blank" rel="noopener noreferrer">${t.privacyPolicy}</a>` +
         `${t.privacyMiddle}<a href="${termsUrl}" target="_blank" rel="noopener noreferrer">${t.terms}</a>.`;
 
-    // Aggiorna il testo del pulsante senza rimuovere lo spinner.
     buttonText.textContent = invioInCorso ? t.loading : t.submit;
 }
 
@@ -846,13 +881,11 @@ Grazie.`;
 
     /*
      * Apre WhatsApp direttamente dal clic dell'utente.
-     * Il browser può bloccare finestre aperte dopo operazioni asincrone,
-     * quindi non inseriamo attese prima di window.open().
+     * Non inseriamo attese prima di window.open().
      */
     const whatsappWindow = window.open(url, "_blank");
 
     if (!whatsappWindow) {
-        // Se il browser blocca la nuova finestra, usa la scheda corrente.
         window.location.href = url;
         return;
     }
@@ -864,9 +897,8 @@ Grazie.`;
     buttonText.textContent = t.loading;
 
     /*
-     * Non possiamo sapere se l'utente ha effettivamente inviato il messaggio
-     * da WhatsApp. Riabilitiamo il pulsante dopo un breve intervallo per
-     * evitare che rimanga bloccato tornando alla pagina.
+     * Riabilita il pulsante dopo un breve intervallo,
+     * quando l'utente torna alla pagina.
      */
     window.setTimeout(() => {
         invioInCorso = false;
